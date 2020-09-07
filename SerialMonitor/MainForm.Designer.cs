@@ -13,10 +13,11 @@
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                _serialComService?.Dispose();
             }
+
             base.Dispose(disposing);
         }
 
@@ -29,6 +30,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.txtRecievedData = new System.Windows.Forms.RichTextBox();
             this.txtBoxMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.popupMenuCopy = new System.Windows.Forms.ToolStripMenuItem();
@@ -45,6 +47,7 @@
             this.btnSettings = new System.Windows.Forms.Button();
             this.btnClear = new System.Windows.Forms.Button();
             this.pnlDropDownSettings = new System.Windows.Forms.Panel();
+            this.btnExitApp = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.drpRowOptions = new System.Windows.Forms.ComboBox();
             this.pnlChkBoxSettings = new System.Windows.Forms.Panel();
@@ -69,13 +72,14 @@
             // txtRecievedData
             // 
             this.txtRecievedData.AccessibleRole = System.Windows.Forms.AccessibleRole.Grip;
+            this.txtRecievedData.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtRecievedData.ContextMenuStrip = this.txtBoxMenu;
             this.txtRecievedData.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtRecievedData.EnableAutoDragDrop = true;
-            this.txtRecievedData.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtRecievedData.Font = new System.Drawing.Font("Verdana Pro", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtRecievedData.Location = new System.Drawing.Point(2, 2);
             this.txtRecievedData.Name = "txtRecievedData";
             this.txtRecievedData.ReadOnly = true;
+            this.txtRecievedData.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
             this.txtRecievedData.Size = new System.Drawing.Size(761, 272);
             this.txtRecievedData.TabIndex = 2;
             this.txtRecievedData.Text = "";
@@ -163,7 +167,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSendText.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSendText.Location = new System.Drawing.Point(5, 6);
+            this.txtSendText.Location = new System.Drawing.Point(6, 9);
             this.txtSendText.MaxLength = 512;
             this.txtSendText.Name = "txtSendText";
             this.txtSendText.Size = new System.Drawing.Size(664, 23);
@@ -172,7 +176,7 @@
             // btnSend
             // 
             this.btnSend.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSend.Location = new System.Drawing.Point(677, 6);
+            this.btnSend.Location = new System.Drawing.Point(675, 5);
             this.btnSend.Name = "btnSend";
             this.btnSend.Size = new System.Drawing.Size(82, 29);
             this.btnSend.TabIndex = 0;
@@ -197,18 +201,19 @@
             // pnlButtonSettings
             // 
             this.pnlButtonSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlButtonSettings.Controls.Add(this.btnExitApp);
             this.pnlButtonSettings.Controls.Add(this.btnSettings);
             this.pnlButtonSettings.Controls.Add(this.btnClear);
-            this.pnlButtonSettings.Location = new System.Drawing.Point(567, 3);
+            this.pnlButtonSettings.Location = new System.Drawing.Point(511, 3);
             this.pnlButtonSettings.Name = "pnlButtonSettings";
-            this.pnlButtonSettings.Size = new System.Drawing.Size(194, 33);
+            this.pnlButtonSettings.Size = new System.Drawing.Size(257, 33);
             this.pnlButtonSettings.TabIndex = 11;
             // 
             // btnSettings
             // 
-            this.btnSettings.Location = new System.Drawing.Point(3, 2);
+            this.btnSettings.Location = new System.Drawing.Point(83, 4);
             this.btnSettings.Name = "btnSettings";
-            this.btnSettings.Size = new System.Drawing.Size(87, 28);
+            this.btnSettings.Size = new System.Drawing.Size(80, 26);
             this.btnSettings.TabIndex = 3;
             this.btnSettings.Text = "Settings";
             this.btnSettings.UseVisualStyleBackColor = true;
@@ -216,9 +221,9 @@
             // 
             // btnClear
             // 
-            this.btnClear.Location = new System.Drawing.Point(98, 3);
+            this.btnClear.Location = new System.Drawing.Point(169, 4);
             this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(87, 28);
+            this.btnClear.Size = new System.Drawing.Size(80, 26);
             this.btnClear.TabIndex = 2;
             this.btnClear.Text = "Clear";
             this.btnClear.UseVisualStyleBackColor = true;
@@ -230,8 +235,19 @@
             this.pnlDropDownSettings.Controls.Add(this.drpRowOptions);
             this.pnlDropDownSettings.Location = new System.Drawing.Point(241, 3);
             this.pnlDropDownSettings.Name = "pnlDropDownSettings";
-            this.pnlDropDownSettings.Size = new System.Drawing.Size(321, 35);
+            this.pnlDropDownSettings.Size = new System.Drawing.Size(275, 35);
             this.pnlDropDownSettings.TabIndex = 10;
+            // 
+            // btnExitApp
+            // 
+            this.btnExitApp.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnExitApp.Location = new System.Drawing.Point(12, 4);
+            this.btnExitApp.Name = "btnExitApp";
+            this.btnExitApp.Size = new System.Drawing.Size(65, 26);
+            this.btnExitApp.TabIndex = 6;
+            this.btnExitApp.Text = "Exit";
+            this.btnExitApp.UseVisualStyleBackColor = true;
+            this.btnExitApp.Click += new System.EventHandler(this.btnExitApp_Click);
             // 
             // label1
             // 
@@ -246,7 +262,7 @@
             // 
             this.drpRowOptions.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.drpRowOptions.FormattingEnabled = true;
-            this.drpRowOptions.Location = new System.Drawing.Point(136, 3);
+            this.drpRowOptions.Location = new System.Drawing.Point(103, 7);
             this.drpRowOptions.Name = "drpRowOptions";
             this.drpRowOptions.Size = new System.Drawing.Size(135, 23);
             this.drpRowOptions.TabIndex = 4;
@@ -263,12 +279,15 @@
             // chkAutoScroll
             // 
             this.chkAutoScroll.AutoSize = true;
+            this.chkAutoScroll.Checked = true;
+            this.chkAutoScroll.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkAutoScroll.Location = new System.Drawing.Point(7, 8);
             this.chkAutoScroll.Name = "chkAutoScroll";
             this.chkAutoScroll.Size = new System.Drawing.Size(80, 19);
             this.chkAutoScroll.TabIndex = 0;
             this.chkAutoScroll.Text = "Autoscroll";
             this.chkAutoScroll.UseVisualStyleBackColor = true;
+            this.chkAutoScroll.CheckStateChanged += new System.EventHandler(this.chkAutoScroll_CheckStateChanged);
             // 
             // chkShowTimeStamps
             // 
@@ -279,6 +298,7 @@
             this.chkShowTimeStamps.TabIndex = 1;
             this.chkShowTimeStamps.Text = "Show Timestamps";
             this.chkShowTimeStamps.UseVisualStyleBackColor = true;
+            this.chkShowTimeStamps.CheckStateChanged += new System.EventHandler(this.chkShowTimeStamps_CheckStateChanged);
             // 
             // openFileDialog1
             // 
@@ -305,13 +325,17 @@
             // 
             // MainForm
             // 
+            this.AcceptButton = this.btnSend;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.btnExitApp;
             this.ClientSize = new System.Drawing.Size(775, 388);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.pnlOptions);
             this.Controls.Add(this.spContainer);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.MinimumSize = new System.Drawing.Size(791, 427);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -362,6 +386,7 @@
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel lblStatus;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btnExitApp;
     }
 }
 
