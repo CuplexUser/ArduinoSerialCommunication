@@ -1,56 +1,54 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using SerialMonitor.Delegates;
 using SerialMonitor.Enums;
 using SerialMonitor.EventStatus;
 
 namespace SerialMonitor.Service
 {
     /// <summary>
-    /// Serial Data communication Service
+    ///     Serial Data communication Service
     /// </summary>
     /// <seealso cref="System.IDisposable" />
     /// <seealso cref="SerialMonitor.Service.ServiceBase" />
     public class SerialComService : ServiceBase, IDisposable
     {
         /// <summary>
-        /// The baud rates
+        ///     The baud rates
         /// </summary>
-        private readonly int[] _baudRates = { 9600, 14400, 19200, 38400, 57600, 115200, 128000, 256000 };
+        private readonly int[] _baudRates = {9600, 14400, 19200, 38400, 57600, 115200, 128000, 256000};
 
         /// <summary>
-        /// The serial COM thread active
-        /// </summary>
-        private bool _serialComThreadActive;
-
-        /// <summary>
-        /// The is reading serial data
-        /// </summary>
-        private bool _isReadingSerialData;
-
-        /// <summary>
-        /// The read task
-        /// </summary>
-        private Task _readTask;
-
-        /// <summary>
-        /// The serial COM wait handle
+        ///     The serial COM wait handle
         /// </summary>
         private readonly AutoResetEvent _serialComWaitHandle;
 
         /// <summary>
-        /// The serial port
+        ///     The is reading serial data
+        /// </summary>
+        private bool _isReadingSerialData;
+
+        /// <summary>
+        ///     The read task
+        /// </summary>
+        private Task _readTask;
+
+        /// <summary>
+        ///     The serial COM thread active
+        /// </summary>
+        private bool _serialComThreadActive;
+
+        /// <summary>
+        ///     The serial port
         /// </summary>
         private SerialPort _serialPort;
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="SerialComService" /> class from being created.
+        ///     Prevents a default instance of the <see cref="SerialComService" /> class from being created.
         /// </summary>
         private SerialComService()
         {
@@ -60,10 +58,10 @@ namespace SerialMonitor.Service
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance is reading serial data.
+        ///     Gets or sets a value indicating whether this instance is reading serial data.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if this instance is reading serial data; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance is reading serial data; otherwise, <c>false</c>.
         /// </value>
         private bool IsReadingSerialData
         {
@@ -84,64 +82,60 @@ namespace SerialMonitor.Service
         }
 
         /// <summary>
-        /// Gets the instance.
+        ///     Gets the instance.
         /// </summary>
         /// <value>
-        /// The instance.
+        ///     The instance.
         /// </value>
         public static SerialComService Instance { get; } = new SerialComService();
 
         /// <summary>
-        /// Gets the last error.
+        ///     Gets the last error.
         /// </summary>
         /// <value>
-        /// The last error.
+        ///     The last error.
         /// </value>
         public string LastError { get; private set; }
 
         /// <summary>
-        /// Gets a value indicating whether this instance is connected.
+        ///     Gets a value indicating whether this instance is connected.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if this instance is connected; otherwise, <c>false</c>.
+        ///     <c>true</c> if this instance is connected; otherwise, <c>false</c>.
         /// </value>
         public bool IsConnected => _serialPort != null && _serialPort.IsOpen;
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
         {
             _serialComThreadActive = false;
             _serialComWaitHandle.Set();
             _serialComWaitHandle.Dispose();
-            //_readTask?.Dispose();
             _serialPort?.Dispose();
         }
 
 
         /// <summary>
-        /// Occurs when [serial connection state changed].
+        ///     Occurs when [serial connection state changed].
         /// </summary>
         public event EventDelegates.SerialConnectionStateEventHandler SerialConnectionStateChanged;
 
         /// <summary>
-        /// Occurs when [serial data received].
+        ///     Occurs when [serial data received].
         /// </summary>
         public event EventDelegates.SerialDataReceivedEventHandler SerialDataReceived;
 
 
         /// <summary>
-        /// Starts the serial read task.
+        ///     Starts the serial read task.
         /// </summary>
         private void StartSerialReadTask()
         {
             if (!IsReadingSerialData)
-            {
                 try
                 {
-
-
                     _readTask = GetDataReaderTask();
 
                     //var awaiter = _readTask.GetAwaiter();
@@ -156,15 +150,12 @@ namespace SerialMonitor.Service
                     IsReadingSerialData = false;
                     LastError = exception.Message;
                     _serialComWaitHandle.Reset();
-                    SerialConnectionStateChanged?.Invoke(this, new SerialConStatusChangedEventArgs(ConnectionStatusChange.Error, exception.Message));
+                    SerialConnectionStateChanged?.Invoke(this, new SerialConStatusChangedEventArgs(ConnectionStatus.Error, exception.Message));
                 }
-            }
-
-
         }
 
         /// <summary>
-        /// Gets the data reader task.
+        ///     Gets the data reader task.
         /// </summary>
         /// <returns></returns>
         private Task GetDataReaderTask()
@@ -175,7 +166,7 @@ namespace SerialMonitor.Service
 
 
         /// <summary>
-        /// Reads the serial data and invoke data read event.
+        ///     Reads the serial data and invoke data read event.
         /// </summary>
         private void ReadSerialDataAndInvokeDataReadEvent()
         {
@@ -187,12 +178,8 @@ namespace SerialMonitor.Service
 
                 do
                 {
-                    while (_serialPort.BytesToRead > 0)
-                    {
-                        sb.Append(_serialPort.ReadLine());
-                    }
+                    while (_serialPort.BytesToRead > 0) sb.Append(_serialPort.ReadLine());
 
-                    
 
                     if (sb.Length > 0)
                     {
@@ -201,9 +188,8 @@ namespace SerialMonitor.Service
                     }
 
                     _readTask.Wait(TimeSpan.FromMilliseconds(200));
-
                 } while (_serialPort.BytesToRead > 0);
-                
+
 
                 IsReadingSerialData = false;
                 _serialComWaitHandle.WaitOne();
@@ -212,16 +198,15 @@ namespace SerialMonitor.Service
 
 
         /// <summary>
-        /// Connects the specified port name.
+        ///     Connects the specified port name.
         /// </summary>
         /// <param name="portName">Name of the port.</param>
         /// <param name="selectedBaudRate">The selected baud rate.</param>
         /// <returns></returns>
-        public bool Connect(string portName, string selectedBaudRate)
+        public bool Connect(string portName, int baudRate)
         {
             try
             {
-                int baudRate = Convert.ToInt32(selectedBaudRate);
                 _serialPort = new SerialPort(portName, baudRate);
 
                 //Default Value is 4 kb
@@ -233,11 +218,11 @@ namespace SerialMonitor.Service
                 _serialPort.ErrorReceived += OnSerialPort_ErrorReceived;
 
                 StartSerialReadTask();
-                SerialConnectionStateChanged?.Invoke(this, new SerialConStatusChangedEventArgs(_serialPort.IsOpen ? ConnectionStatusChange.Connected : ConnectionStatusChange.Disconnected));
+                SerialConnectionStateChanged?.Invoke(this, new SerialConStatusChangedEventArgs(_serialPort.IsOpen ? ConnectionStatus.Connected : ConnectionStatus.Disconnected));
             }
             catch (Exception exception)
             {
-                SerialConnectionStateChanged?.Invoke(this, new SerialConStatusChangedEventArgs(ConnectionStatusChange.Error, exception.Message));
+                SerialConnectionStateChanged?.Invoke(this, new SerialConStatusChangedEventArgs(ConnectionStatus.Error, exception.Message));
                 LastError = exception.Message;
                 return false;
             }
@@ -245,22 +230,27 @@ namespace SerialMonitor.Service
             return true;
         }
 
+        public static string[] GetPortNamesAvailable()
+        {
+            return  SerialPort.GetPortNames();
+        }
+
         /// <summary>
-        /// Called when [serial port error received].
+        ///     Called when [serial port error received].
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="SerialErrorReceivedEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="SerialErrorReceivedEventArgs" /> instance containing the event data.</param>
         private void OnSerialPort_ErrorReceived(object sender, SerialErrorReceivedEventArgs e)
         {
-            SerialConnectionStateChanged?.Invoke(this, new SerialConStatusChangedEventArgs(ConnectionStatusChange.Error, e.EventType.ToString()));
+            SerialConnectionStateChanged?.Invoke(this, new SerialConStatusChangedEventArgs(ConnectionStatus.Error, e.EventType.ToString()));
         }
 
 
         /// <summary>
-        /// Called when [serial port pin changed].
+        ///     Called when [serial port pin changed].
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="SerialPinChangedEventArgs"/> instance containing the event data.</param>
+        /// <param name="e">The <see cref="SerialPinChangedEventArgs" /> instance containing the event data.</param>
         private void OnSerialPort_PinChanged(object sender, SerialPinChangedEventArgs e)
         {
             // Thread wakeup event
@@ -268,18 +258,19 @@ namespace SerialMonitor.Service
         }
 
         /// <summary>
-        /// Disconnects this instance.
+        ///     Disconnects this instance.
         /// </summary>
         /// <returns></returns>
         public bool Disconnect()
         {
             if (_serialPort != null && _serialPort.IsOpen)
             {
-
                 _serialPort.Close();
                 _serialPort.DataReceived -= OnSerialPort_DataReceived;
                 _serialPort.ErrorReceived -= OnSerialPort_ErrorReceived;
                 _serialPort.Dispose();
+
+                SerialConnectionStateChanged?.Invoke(this, new SerialConStatusChangedEventArgs(ConnectionStatus.Disconnected));
                 return true;
             }
 
@@ -287,22 +278,19 @@ namespace SerialMonitor.Service
         }
 
         /// <summary>
-        /// Called when data is received and will read the device data async and trigger its own Data received event when
-        /// either the receive buffer is full or all data has been read.
+        ///     Called when data is received and will read the device data async and trigger its own Data received event when
+        ///     either the receive buffer is full or all data has been read.
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="SerialDataReceivedEventArgs" /> instance containing the event data.</param>
         private void OnSerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             _serialComWaitHandle.Set();
-            if (e.EventType == SerialData.Eof)
-            {
-                Debug.WriteLine("SerialData.Eof event");
-            }
+            if (e.EventType == SerialData.Eof) Debug.WriteLine("SerialData.Eof event");
         }
 
         /// <summary>
-        /// Gets the baud rates.
+        ///     Gets the baud rates.
         /// </summary>
         /// <returns></returns>
         public string[] GetBaudRates()
@@ -316,8 +304,8 @@ namespace SerialMonitor.Service
             {
                 _serialPort.WriteLine(text);
                 return true;
-
             }
+
             return false;
         }
     }

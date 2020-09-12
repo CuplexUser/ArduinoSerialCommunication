@@ -1,9 +1,14 @@
-﻿namespace SerialMonitor.Enums
+﻿using System;
+
+namespace SerialMonitor.Enums
 {
-    public enum ConnectionStatusChange
+    [Serializable]
+    public enum ConnectionStatus
     {
-        Connected,
-        Disconnected,
-        Error
+        None = 0,
+        Disconnected = 1,
+        Connected = 2,
+        Error = 0,
+
     }
 }

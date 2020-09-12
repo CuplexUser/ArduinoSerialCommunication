@@ -1,5 +1,7 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Windows.Forms;
 
 namespace SerialMonitor.Helpers
@@ -13,5 +15,12 @@ namespace SerialMonitor.Helpers
 
             return title;
         }
+        
+
+    }
+    
+    public class StaticDataSources
+    {
+        public static object[] NewlineOptions = { "Newline", "Newline+CR", "Null character" };
     }
 }

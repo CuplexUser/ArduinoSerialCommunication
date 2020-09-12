@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using SerialMonitor.Helpers;
 using SerialMonitor.Service;
 
 namespace SerialMonitor
@@ -34,16 +35,7 @@ namespace SerialMonitor
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void SerialConnectionSettings_Load(object sender, EventArgs e)
         {
-            string[] names = System.IO.Ports.SerialPort.GetPortNames();
-            foreach (string name in names)
-            {
-                drpPorts.Items.Add(name);
-            }
-
-            if (names.Length > 0)
-            {
-                drpPorts.SelectedIndex = 0;
-            }
+            PopulateComDrpList();
 
             var rates = _serialComService.GetBaudRates();
             foreach (string rate in rates)
@@ -63,6 +55,29 @@ namespace SerialMonitor
                 }
             }
 
+            InitNewlineOptions();
+
+        }
+
+        private void PopulateComDrpList()
+        {
+            drpPorts.Items.Clear();
+            var names = SerialComService.GetPortNamesAvailable();
+
+            foreach (string name in names)
+            {
+                drpPorts.Items.Add(name);
+            }
+
+            if (names.Length > 0)
+            {
+                drpPorts.SelectedIndex = 0;
+            }
+        }
+
+        private void InitNewlineOptions()
+        {
+            drpRowOptions.DataSource = StaticDataSources.NewlineOptions;
         }
 
         /// <summary>
@@ -72,11 +87,20 @@ namespace SerialMonitor
         {
             if (_serialComService.IsConnected)
             {
-                   AppendStatusText("Already connected!");
-                   return;
+                AppendStatusText("Already connected!");
+                return;
             }
 
-            if (_serialComService.Connect(drpPorts.SelectedItem.ToString(), drpBaudRate.SelectedItem.ToString()))
+            if (drpPorts.Items.Count == 0)
+            {
+                MessageBox.Show("No available Com Ports", "Unable to connect", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+
+            int baudRate = Convert.ToInt32(drpBaudRate.SelectedItem.ToString());
+            string comPort = drpPorts.SelectedItem.ToString();
+
+            if (_serialComService.Connect(comPort, baudRate))
             {
                 AppendStatusText("Connected");
             }
@@ -103,7 +127,8 @@ namespace SerialMonitor
         /// </summary>
         private void RefreshCom()
         {
-
+            PopulateComDrpList();
+            AppendStatusText("Refreshed Com port List");
         }
 
         /// <summary>
@@ -144,5 +169,6 @@ namespace SerialMonitor
         {
             RefreshCom();
         }
+
     }
 }

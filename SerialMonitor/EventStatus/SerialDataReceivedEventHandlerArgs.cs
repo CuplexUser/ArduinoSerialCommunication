@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SerialMonitor.Service
+namespace SerialMonitor.EventStatus
 {
     /// <summary>
     /// </summary>

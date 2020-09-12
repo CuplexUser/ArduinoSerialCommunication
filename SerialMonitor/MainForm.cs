@@ -1,8 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using SerialMonitor.Enums;
+using SerialMonitor.EventStatus;
 using SerialMonitor.Helpers;
+using SerialMonitor.Models;
+using SerialMonitor.Properties;
 using SerialMonitor.Service;
 
 namespace SerialMonitor
@@ -17,12 +22,16 @@ namespace SerialMonitor
         /// The serial COM service
         /// </summary>
         private readonly SerialComService _serialComService = SerialComService.Instance;
+        private readonly ApplicationStateModel _applicationState = new ApplicationStateModel();
+        private readonly Settings _appSettings;
         /// <summary>
         /// Initializes a new instance of the <see cref="MainForm"/> class.
         /// </summary>
         public MainForm()
         {
             InitializeComponent();
+            _appSettings = new Settings();
+            _appSettings.Reload();
         }
 
         /// <summary>
@@ -45,31 +54,40 @@ namespace SerialMonitor
             _serialComService.SerialDataReceived += OnSerialComService_SerialDataReceived;
             _serialComService.SerialConnectionStateChanged += _serialComService_SerialConnectionStateChanged;
             Text = ApplicationDataHelper.GetMainFormTitle();
+        
+            _applicationState.BaudRate = _appSettings.BaudRate;
+            _applicationState.EnableTimestamps = _appSettings.EnableTimestamps;
+            _applicationState.AutoScrollText = _appSettings.AutoScroll;
+            _applicationState.Status = ConnectionStatus.None;
+            UpdateGuiFromAppState();
         }
+
+
 
         /// <summary>
         /// Handles the SerialConnectionStateChanged event of the _serialComService control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="args">The <see cref="EventStatus.SerialConStatusChangedEventArgs"/> instance containing the event data.</param>
-        private void _serialComService_SerialConnectionStateChanged(object sender, EventStatus.SerialConStatusChangedEventArgs args)
+        private void _serialComService_SerialConnectionStateChanged(object sender, SerialConStatusChangedEventArgs args)
         {
-            string statusText = "";
-            if (args.ActiveStatus == ConnectionStatusChange.Connected)
+            if (args.ActiveStatus == ConnectionStatus.Connected)
             {
-                statusText = "Connected";
+                _applicationState.Status = ConnectionStatus.Connected;
+
             }
-            else if (args.ActiveStatus == ConnectionStatusChange.Disconnected)
+            else if (args.ActiveStatus == ConnectionStatus.Disconnected)
             {
-                statusText = "Disconnected";
+                _applicationState.Status = ConnectionStatus.Disconnected;
+
             }
             else
             {
-                statusText = "Error";
+                _applicationState.Status = ConnectionStatus.Error;
                 AppendToReceivedData(args.Message + "\r\n");
             }
 
-            SetStatusLabelText(statusText);
+            UpdateGuiFromAppState();
         }
 
 
@@ -93,8 +111,14 @@ namespace SerialMonitor
         {
             txtRecievedData.BeginInvoke((MethodInvoker)delegate ()
             {
+                if (_applicationState.EnableTimestamps)
+                {
+                    dataReceived = DateTime.Now.ToString("yyyy-MM-dd - hh:mm:ss") + "\r\n" + dataReceived;
+                }
+
                 txtRecievedData.AppendText(dataReceived);
-                if (chkAutoScroll.Checked)
+
+                if (_applicationState.AutoScrollText)
                 {
                     txtRecievedData.ScrollToCaret();
                 }
@@ -167,6 +191,74 @@ namespace SerialMonitor
 
         }
 
+        private void ConnectToFirstOpenComPort()
+        {
+            if (_serialComService.IsConnected)
+            {
+                lblStatus2.Text = "Error, already connected. Disconnect before making a new connection.";
+                return;
+            }
+
+            int defBaudRate = Settings.Default.BaudRate;
+            string portName = SerialComService.GetPortNamesAvailable().FirstOrDefault();
+
+            if (string.IsNullOrEmpty(portName))
+            {
+                lblStatus2.Text = "Quick connect was not possible because no available ports where available.";
+                return;
+            }
+
+            bool result = _serialComService.Connect(portName, defBaudRate);
+            lblStatus2.Text = result ? "Quick Connect Successful" : "Quick connect failed.";
+        }
+
+        private void UpdateGuiFromAppState()
+        {
+            if (Thread.CurrentThread.IsBackground || Thread.CurrentThread.IsThreadPoolThread)
+            {
+                BeginInvoke((MethodInvoker)UpdateGuiUsingNativeThread);
+            }
+            else
+            {
+                UpdateGuiUsingNativeThread();
+            }
+        }
+
+
+        private void UpdateGuiUsingNativeThread()
+        {
+            string statusText = "";
+            if (_applicationState.Status == ConnectionStatus.Connected)
+            {
+                statusText = "Connected";
+                btnSend.Enabled = true;
+                btnQuickConnect.Enabled = false;
+            }
+            else if (_applicationState.Status == ConnectionStatus.Disconnected)
+            {
+                statusText = "Disconnected";
+                btnSend.Enabled = false;
+                btnQuickConnect.Enabled = true;
+            }
+            else if (_applicationState.Status == ConnectionStatus.None)
+            {
+                statusText = "Not Connected";
+                btnSend.Enabled = false;
+                btnQuickConnect.Enabled = true;
+            }
+            else
+            {
+                statusText = "Error";
+                btnSend.Enabled = false;
+                btnQuickConnect.Enabled = false;
+            }
+
+            chkShowTimeStamps.Checked = _applicationState.EnableTimestamps;
+            chkAutoScroll.Checked = _applicationState.AutoScrollText;
+
+            lblStatus.Text = statusText;
+        }
+
         /// <summary>
         /// Handles the CheckStateChanged event of the chkAutoScroll control.
         /// </summary>
@@ -174,7 +266,7 @@ namespace SerialMonitor
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void chkAutoScroll_CheckStateChanged(object sender, EventArgs e)
         {
-
+            _applicationState.AutoScrollText = chkAutoScroll.Checked;
         }
 
         /// <summary>
@@ -184,7 +276,7 @@ namespace SerialMonitor
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void chkShowTimeStamps_CheckStateChanged(object sender, EventArgs e)
         {
-
+            _applicationState.EnableTimestamps = chkShowTimeStamps.Checked;
         }
 
 
@@ -199,6 +291,76 @@ namespace SerialMonitor
             {
                 Application.Exit(new CancelEventArgs(false));
             }
+        }
+
+        private void popupMenuReconnect_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void popupMenuDisconnect_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void popupMenuOpenFile_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void popupMenuSave_Click(object sender, EventArgs e)
+        {
+            saveFileDialog1.Filter = "Text files (*.txt)|*.txt";
+            saveFileDialog1.DefaultExt = "txt";
+            saveFileDialog1.RestoreDirectory = true;
+            saveFileDialog1.OverwritePrompt = true;
+            saveFileDialog1.Title = "Save output to text file";
+            saveFileDialog1.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
+
+            if (saveFileDialog1.ShowDialog(this) == DialogResult.OK && !string.IsNullOrEmpty(saveFileDialog1.FileName))
+            {
+                try
+                {
+                    txtRecievedData.SaveFile(saveFileDialog1.FileName, RichTextBoxStreamType.PlainText);
+                    txtRecievedData.Clear();
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error saving file", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void popupMenuCopy_Click(object sender, EventArgs e)
+        {
+            if (txtRecievedData.SelectedRtf?.Length > 0)
+            {
+                Clipboard.Clear();
+                Clipboard.SetText(txtRecievedData.SelectedRtf, TextDataFormat.Rtf);
+            }
+        }
+
+        private void drpRowOptions_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnQuickConnect_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Save Settings
+            _appSettings.AutoScroll = _applicationState.AutoScrollText;
+            _appSettings.EnableTimestamps = _applicationState.EnableTimestamps;
+            _appSettings.BaudRate = _applicationState.BaudRate;
+            _appSettings.Save();
+
+            e.Cancel = false;
+
         }
     }
 }

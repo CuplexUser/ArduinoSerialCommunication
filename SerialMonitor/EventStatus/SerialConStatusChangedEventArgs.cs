@@ -8,18 +8,18 @@ namespace SerialMonitor.EventStatus
     {
 
 
-        public SerialConStatusChangedEventArgs(ConnectionStatusChange connectionStatus)
+        public SerialConStatusChangedEventArgs(ConnectionStatus connectionStatus)
         {
             ActiveStatus = connectionStatus;
         }
 
-        public SerialConStatusChangedEventArgs(ConnectionStatusChange status, string message)
+        public SerialConStatusChangedEventArgs(ConnectionStatus status, string message)
         {
             ActiveStatus = status;
             Message = message;
         }
 
-        public ConnectionStatusChange ActiveStatus { get; private set; }
+        public ConnectionStatus ActiveStatus { get; private set; }
 
         public string Message { get; set; }
 

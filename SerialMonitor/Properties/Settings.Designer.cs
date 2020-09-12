@@ -23,15 +23,48 @@ namespace SerialMonitor.Properties {
             }
         }
         
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("115200")]
+        public int DefaultBaudRate {
+            get {
+                return ((int)(this["DefaultBaudRate"]));
+            }
+        }
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("115200")]
-        public string BaudRate {
+        public int BaudRate {
             get {
-                return ((string)(this["BaudRate"]));
+                return ((int)(this["BaudRate"]));
             }
             set {
                 this["BaudRate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AutoScroll {
+            get {
+                return ((bool)(this["AutoScroll"]));
+            }
+            set {
+                this["AutoScroll"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool EnableTimestamps {
+            get {
+                return ((bool)(this["EnableTimestamps"]));
+            }
+            set {
+                this["EnableTimestamps"] = value;
             }
         }
     }
