@@ -5,8 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using SerialMonitor.Enums;
 using SerialMonitor.EventStatus;
+using StorageModule.Models.Enums;
 
 namespace SerialMonitor.Service
 {

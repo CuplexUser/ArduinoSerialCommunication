@@ -1,14 +1,14 @@
 ﻿using System;
 
-namespace SerialMonitor.Enums
+namespace StorageModule.DataModels
 {
     [Serializable]
-    public enum ConnectionStatus
+    public enum ConnectionStatusModel : int
     {
         None = 0,
         Disconnected = 1,
         Connected = 2,
-        Error = 0,
+        Error = 3,
 
     }
 }

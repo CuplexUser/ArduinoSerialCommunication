@@ -14,11 +14,16 @@
             SettingChanging += SettingChangingEventHandler;
 
             SettingsSaving += SettingsSavingEventHandler;
+
             //
         }
+
         
         private void SettingChangingEventHandler(object sender, System.Configuration.SettingChangingEventArgs e) {
             // Add code to handle the SettingChangingEvent event here.
+
+            
+
         }
         
         private void SettingsSavingEventHandler(object sender, System.ComponentModel.CancelEventArgs e) {

@@ -1,6 +1,4 @@
-﻿using SerialMonitor.Service;
-
-namespace SerialMonitor.EventStatus
+﻿namespace SerialMonitor.EventStatus
 {
     public static class EventDelegates
     {

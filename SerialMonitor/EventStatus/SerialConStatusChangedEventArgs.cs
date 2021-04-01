@@ -1,5 +1,5 @@
 ﻿using System;
-using SerialMonitor.Enums;
+using StorageModule.Models.Enums;
 
 namespace SerialMonitor.EventStatus
 {

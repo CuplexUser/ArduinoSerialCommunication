@@ -3,12 +3,13 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
-using SerialMonitor.Enums;
 using SerialMonitor.EventStatus;
 using SerialMonitor.Helpers;
-using SerialMonitor.Models;
 using SerialMonitor.Properties;
 using SerialMonitor.Service;
+using StorageModule.Models;
+using StorageModule.Models.Enums;
+using StorageModule.Provider;
 
 namespace SerialMonitor
 {
@@ -22,16 +23,30 @@ namespace SerialMonitor
         /// The serial COM service
         /// </summary>
         private readonly SerialComService _serialComService = SerialComService.Instance;
-        private readonly ApplicationStateModel _applicationState = new ApplicationStateModel();
-        private readonly Settings _appSettings;
+
+        private readonly AppSettingsModel _applicationState;
+        //private readonly Settings _appSettings;
+
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MainForm"/> class.
         /// </summary>
         public MainForm()
         {
             InitializeComponent();
-            _appSettings = new Settings();
-            _appSettings.Reload();
+            var settingsProvider = new AppSettingsProvider();
+            _applicationState = settingsProvider.LoadSettings<AppSettingsModel>();
+
+            if (_applicationState == null)
+            {
+                _applicationState = new AppSettingsModel
+                {
+                    AutoScrollText = true,
+                    BaudRate = 115200,
+                    EnableTimestamps = true,
+                    Status = ConnectionStatus.None
+                };
+            }
         }
 
         /// <summary>
@@ -54,10 +69,7 @@ namespace SerialMonitor
             _serialComService.SerialDataReceived += OnSerialComService_SerialDataReceived;
             _serialComService.SerialConnectionStateChanged += _serialComService_SerialConnectionStateChanged;
             Text = ApplicationDataHelper.GetMainFormTitle();
-        
-            _applicationState.BaudRate = _appSettings.BaudRate;
-            _applicationState.EnableTimestamps = _appSettings.EnableTimestamps;
-            _applicationState.AutoScrollText = _appSettings.AutoScroll;
+
             _applicationState.Status = ConnectionStatus.None;
             UpdateGuiFromAppState();
         }
@@ -354,10 +366,7 @@ namespace SerialMonitor
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             // Save Settings
-            _appSettings.AutoScroll = _applicationState.AutoScrollText;
-            _appSettings.EnableTimestamps = _applicationState.EnableTimestamps;
-            _appSettings.BaudRate = _applicationState.BaudRate;
-            _appSettings.Save();
+
 
             e.Cancel = false;
 
