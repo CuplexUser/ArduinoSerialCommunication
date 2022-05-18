@@ -32,10 +32,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>CodeSignCert.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Com-MainIcon.ico</ApplicationIcon>
@@ -89,12 +90,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
-    <None Include="CodeSignCert.pfx" />
     <None Include="nextCert.cer" />
     <None Include="output.snk" />
     <None Include="SignKey.snk" />
-    <None Include="StorageModule.pfx" />
-    <None Include="Test.snk.p7b" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Compression\" />
@@ -111,9 +109,6 @@
     </PackageReference>
     <PackageReference Include="Serilog.Sinks.RollingFile">
       <Version>3.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="SharpZipLib">
-      <Version>1.2.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
