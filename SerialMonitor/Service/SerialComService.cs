@@ -201,7 +201,7 @@ namespace SerialMonitor.Service
         ///     Connects the specified port name.
         /// </summary>
         /// <param name="portName">Name of the port.</param>
-        /// <param name="selectedBaudRate">The selected baud rate.</param>
+        /// <param name="baudRate">The selected baud rate.</param>
         /// <returns></returns>
         public bool Connect(string portName, int baudRate)
         {

@@ -82,7 +82,7 @@
             this.txtRecievedData.Name = "txtRecievedData";
             this.txtRecievedData.ReadOnly = true;
             this.txtRecievedData.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.txtRecievedData.Size = new System.Drawing.Size(674, 359);
+            this.txtRecievedData.Size = new System.Drawing.Size(674, 358);
             this.txtRecievedData.TabIndex = 2;
             this.txtRecievedData.Text = "";
             // 
@@ -288,12 +288,12 @@
             // btnQuickConnect
             // 
             this.btnQuickConnect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnQuickConnect.Location = new System.Drawing.Point(86, 2);
+            this.btnQuickConnect.Location = new System.Drawing.Point(81, 2);
             this.btnQuickConnect.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.btnQuickConnect.Name = "btnQuickConnect";
-            this.btnQuickConnect.Size = new System.Drawing.Size(90, 24);
+            this.btnQuickConnect.Size = new System.Drawing.Size(95, 24);
             this.btnQuickConnect.TabIndex = 10;
-            this.btnQuickConnect.Text = "Quick Conect";
+            this.btnQuickConnect.Text = "Quick Connect";
             this.btnQuickConnect.UseVisualStyleBackColor = true;
             this.btnQuickConnect.Click += new System.EventHandler(this.btnQuickConnect_Click);
             // 
@@ -301,7 +301,7 @@
             // 
             this.btnExitApp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnExitApp.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnExitApp.Location = new System.Drawing.Point(11, 2);
+            this.btnExitApp.Location = new System.Drawing.Point(6, 2);
             this.btnExitApp.Margin = new System.Windows.Forms.Padding(2, 0, 6, 0);
             this.btnExitApp.Name = "btnExitApp";
             this.btnExitApp.Size = new System.Drawing.Size(65, 24);

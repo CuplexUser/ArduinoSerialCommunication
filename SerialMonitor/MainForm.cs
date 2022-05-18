@@ -125,7 +125,7 @@ namespace SerialMonitor
             {
                 if (_applicationState.EnableTimestamps)
                 {
-                    dataReceived = DateTime.Now.ToString("yyyy-MM-dd - hh:mm:ss") + "\r\n" + dataReceived;
+                    dataReceived = DateTime.Now.ToString("yyyy-MM-dd - HH:mm:ss") + "\r\n" + dataReceived;
                 }
 
                 txtRecievedData.AppendText(dataReceived);
@@ -244,13 +244,16 @@ namespace SerialMonitor
             {
                 statusText = "Connected";
                 btnSend.Enabled = true;
-                btnQuickConnect.Enabled = false;
+                //btnQuickConnect.Enabled = false;
+                btnQuickConnect.Text = "Disconnect";
+
             }
             else if (_applicationState.Status == ConnectionStatus.Disconnected)
             {
                 statusText = "Disconnected";
                 btnSend.Enabled = false;
-                btnQuickConnect.Enabled = true;
+                btnQuickConnect.Text = "Quick Connect";
+                //btnQuickConnect.Enabled = true;
             }
             else if (_applicationState.Status == ConnectionStatus.None)
             {
@@ -360,7 +363,16 @@ namespace SerialMonitor
 
         private void btnQuickConnect_Click(object sender, EventArgs e)
         {
-
+            if (_applicationState.Status == ConnectionStatus.Disconnected || _applicationState.Status == ConnectionStatus.None)
+            {
+                ConnectToFirstOpenComPort();
+            }
+            else if (_applicationState.Status == ConnectionStatus.Connected)
+            {
+                _serialComService.Disconnect();
+                Thread.Sleep(10);
+                UpdateGuiFromAppState();
+            }
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
