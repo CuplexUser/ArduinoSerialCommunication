@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -44,7 +43,6 @@ namespace SerialMonitor
             {
                 // Begin startup async jobs
                 ApplicationSettingsService settingsService = scope.Resolve<ApplicationSettingsService>();
-
 
                 bool readSuccessful = settingsService.LoadSettings();
 

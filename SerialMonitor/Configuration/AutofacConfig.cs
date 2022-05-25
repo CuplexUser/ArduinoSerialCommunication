@@ -10,23 +10,18 @@ namespace SerialMonitor.Configuration
         {
             var builder = new ContainerBuilder();
             var thisAssembly = Assembly.GetExecutingAssembly();
-
-
-            Assembly[] coreAssemblies = new Assembly[2];
             var storageModuleAssembly = GetStorageModuleAssembly();
 
+            Assembly[] coreAssemblies = new Assembly[2];
             coreAssemblies[0] = thisAssembly;
             coreAssemblies[1] = storageModuleAssembly;
 
-            if (storageModuleAssembly != null)
+            foreach (Assembly assembly in coreAssemblies)
             {
-                builder.RegisterAssemblyModules(storageModuleAssembly);
+                builder.RegisterAssemblyModules(assembly);
             }
 
-            builder.RegisterAssemblyModules(thisAssembly);
             var container = builder.Build();
-
-
             return container;
         }
 

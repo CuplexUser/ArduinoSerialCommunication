@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using SerialMonitor.EventStatus;
+using Serilog;
 using StorageModule.Models.Enums;
 
 namespace SerialMonitor.Service
@@ -20,12 +21,14 @@ namespace SerialMonitor.Service
         /// <summary>
         ///     The baud rates
         /// </summary>
-        private readonly int[] _baudRates = {9600, 14400, 19200, 38400, 57600, 115200, 128000, 256000};
+        private readonly int[] _baudRates = { 9600, 14400, 19200, 38400, 57600, 115200, 128000, 256000 };
 
         /// <summary>
         ///     The serial COM wait handle
         /// </summary>
         private AutoResetEvent _serialComWaitHandle;
+
+        private readonly ILogger _logger;
 
         /// <summary>
         ///     The is reading serial data
@@ -50,8 +53,9 @@ namespace SerialMonitor.Service
         /// <summary>
         ///     Prevents a default instance of the <see cref="SerialComService" /> class from being created.
         /// </summary>
-        private SerialComService()
+        public SerialComService(ILogger logger)
         {
+            _logger = logger;
             _serialComWaitHandle = new AutoResetEvent(false);
             _serialComThreadActive = true;
             _isReadingSerialData = false;
@@ -82,14 +86,6 @@ namespace SerialMonitor.Service
         }
 
         /// <summary>
-        ///     Gets the instance.
-        /// </summary>
-        /// <value>
-        ///     The instance.
-        /// </value>
-        public static SerialComService Instance { get; } = new SerialComService();
-
-        /// <summary>
         ///     Gets the last error.
         /// </summary>
         /// <value>
@@ -117,7 +113,7 @@ namespace SerialMonitor.Service
                 _serialComWaitHandle.Dispose();
                 _serialComWaitHandle = null;
             }
-            
+
             _serialPort?.Dispose();
         }
 
@@ -232,12 +228,13 @@ namespace SerialMonitor.Service
                 return false;
             }
 
+            _logger.Information("Connected successfully to {portName}, at {baudRate}", portName, baudRate);
             return true;
         }
 
         public static string[] GetPortNamesAvailable()
         {
-            return  SerialPort.GetPortNames();
+            return SerialPort.GetPortNames();
         }
 
         /// <summary>
@@ -268,14 +265,19 @@ namespace SerialMonitor.Service
         /// <returns></returns>
         public bool Disconnect()
         {
-            if (_serialPort != null && _serialPort.IsOpen)
+            if (_serialPort != null)
             {
-                _serialPort.Close();
+                if (_serialPort.IsOpen)
+                {
+                    _logger.Information("Disconnected from serialport {port}", _serialPort.PortName);
+                    _serialPort.Close();
+                    SerialConnectionStateChanged?.Invoke(this, new SerialConStatusChangedEventArgs(ConnectionStatus.Disconnected));
+                }
+
                 _serialPort.DataReceived -= OnSerialPort_DataReceived;
                 _serialPort.ErrorReceived -= OnSerialPort_ErrorReceived;
                 _serialPort.Dispose();
-
-                SerialConnectionStateChanged?.Invoke(this, new SerialConStatusChangedEventArgs(ConnectionStatus.Disconnected));
+                _serialPort = null;
                 return true;
             }
 

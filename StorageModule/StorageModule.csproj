@@ -15,7 +15,7 @@
   <PropertyGroup>
     <DelaySign>false</DelaySign>
     <Version>3.0.0</Version>
-    <SignAssembly>True</SignAssembly>
+    <SignAssembly>False</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Compression\" />
@@ -23,7 +23,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Autofac.Extensions.DependencyInjection">
-      <Version>7.2.0</Version>
+      <Version>8.0.0</Version>
       <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
     <PackageReference Include="AutofacSerilogIntegration">
@@ -44,9 +44,6 @@
     </PackageReference>
     <PackageReference Include="Serilog.Sinks.File">
       <Version>5.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0">
-      <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
     <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.3.326103">
       <PrivateAssets>all</PrivateAssets>

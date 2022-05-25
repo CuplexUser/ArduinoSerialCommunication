@@ -14,7 +14,7 @@ namespace SerialMonitor
         /// <summary>
         /// The serial COM service
         /// </summary>
-        private readonly SerialComService _serialComService = SerialComService.Instance;
+        private readonly SerialComService _serialComService;
         /// <summary>
         /// The default baud rate
         /// </summary>
@@ -23,8 +23,9 @@ namespace SerialMonitor
         /// <summary>
         /// Initializes a new instance of the <see cref="SerialConnectionSettings"/> class.
         /// </summary>
-        public SerialConnectionSettings()
+        public SerialConnectionSettings(SerialComService serialComService)
         {
+            _serialComService = serialComService;
             InitializeComponent();
         }
 

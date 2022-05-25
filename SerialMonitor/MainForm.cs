@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using Autofac;
 using SerialMonitor.EventStatus;
 using SerialMonitor.Helpers;
 using SerialMonitor.Properties;
@@ -22,16 +23,19 @@ namespace SerialMonitor
         /// <summary>
         /// The serial COM service
         /// </summary>
-        private readonly SerialComService _serialComService = SerialComService.Instance;
+        private readonly SerialComService _serialComService;
         private readonly ApplicationSettingsService _appSettingsService;
+        private readonly ILifetimeScope _scope;
         private ApplicationSettingsModel _applicationState;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainForm"/> class.
         /// </summary>
-        public MainForm(ApplicationSettingsService appSettingsService)
+        public MainForm(ApplicationSettingsService appSettingsService, SerialComService serialComService, ILifetimeScope scope)
         {
             _appSettingsService = appSettingsService;
+            _serialComService = serialComService;
+            _scope = scope;
             // Loaded from Program.cs aswell
             appSettingsService.LoadSettings();
 
@@ -156,15 +160,15 @@ namespace SerialMonitor
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void btnSettings_Click(object sender, EventArgs e)
         {
-            var settingsForm = new SerialConnectionSettings();
-            var result = settingsForm.ShowDialog(this);
-
-            if (result == DialogResult.OK)
+            using (var settingsForm = _scope.Resolve<SerialConnectionSettings>())
             {
+                var result = settingsForm.ShowDialog(this);
 
+                if (result == DialogResult.OK)
+                {
+                    _appSettingsService.SaveSettings();
+                }
             }
-
-            settingsForm.Dispose();
         }
 
         /// <summary>
