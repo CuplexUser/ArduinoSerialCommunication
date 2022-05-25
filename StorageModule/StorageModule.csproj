@@ -1,108 +1,22 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{725B94DE-05CE-45A9-8599-8C000C952103}</ProjectGuid>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>StorageModule</RootNamespace>
-    <AssemblyName>StorageModule</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>CodeSignCert.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Com-MainIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <DelaySign>false</DelaySign>
+    <Version>3.0.0</Version>
+    <SignAssembly>True</SignAssembly>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Security" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.ServiceModel.Activation" />
-    <Reference Include="System.ServiceModel.Activities" />
-    <Reference Include="System.Windows" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Configuration\ApplicationBuildConfig.cs" />
-    <Compile Include="Configuration\AutofacModules\LoggingModule.cs" />
-    <Compile Include="Configuration\AutofacModules\SerialMonitorModule.cs" />
-    <Compile Include="Configuration\AutomapperConfig.cs" />
-    <Compile Include="Configuration\AutomapperProfile\SerialMonitorMappingProfile.cs" />
-    <Compile Include="Encryption\CryptoProgress.cs" />
-    <Compile Include="Encryption\EncryptionManager.cs" />
-    <Compile Include="Encryption\Hashing\CRC32.cs" />
-    <Compile Include="Encryption\Hashing\HashProgress.cs" />
-    <Compile Include="Encryption\Hashing\IHashTransform.cs" />
-    <Compile Include="Encryption\Hashing\SHA256Impl.cs" />
-    <Compile Include="Encryption\Hashing\SHA512Impl.cs" />
-    <Compile Include="Helpers\AssemblyHelper.cs" />
-    <Compile Include="Helpers\DataConverter.cs" />
-    <Compile Include="Models\ApplicationSettingsModel.cs" />
-    <Compile Include="Models\Enums\ConnectionStatus.cs" />
-    <Compile Include="Repositories\AppSettingsRepository.cs" />
-    <Compile Include="Repositories\RepositoryBase.cs" />
-    <Compile Include="Serializers\ObjectSerializer.cs" />
-    <Compile Include="Serializers\RawSerializer.cs" />
-    <Compile Include="Services\ApplicationSettingsService.cs" />
-    <Compile Include="Services\ServiceBase.cs" />
-    <Compile Include="StorageManager\FileOperationAsyncProgress.cs" />
-    <Compile Include="StorageManager\Implementation\StorageManager.cs" />
-    <Compile Include="StorageManager\IStorageManager.cs" />
-    <Compile Include="StorageManager\Models\ArchiveFileHeader.cs" />
-    <Compile Include="StorageManager\Models\StorageManagerSettings.cs" />
-    <Compile Include="StorageManager\StorageManagerBase.cs" />
-    <Compile Include="StorageManager\StorageManagerProgress.cs" />
-    <Compile Include="StorageManager\StorageManagerSettings.cs" />
-    <Compile Include="StorageModule.cs" />
-    <Compile Include="DataModels\ApplicationSettingsDataModel.cs" />
-    <Compile Include="DataModels\ConnectionStatusModel.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
-    <None Include="nextCert.cer" />
-    <None Include="output.snk" />
-    <None Include="SignKey.snk" />
-  </ItemGroup>
   <ItemGroup>
     <Folder Include="Compression\" />
     <Folder Include="Provider\" />
@@ -110,24 +24,20 @@
   <ItemGroup>
     <PackageReference Include="Autofac.Extensions.DependencyInjection">
       <Version>7.2.0</Version>
+      <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
     <PackageReference Include="AutofacSerilogIntegration">
       <Version>5.0.0</Version>
     </PackageReference>
     <PackageReference Include="AutoMapper.Contrib.Autofac.DependencyInjection">
-      <Version>5.3.0</Version>
+      <Version>6.0.1</Version>
     </PackageReference>
-    <PackageReference Include="Castle.Core">
-      <Version>5.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="Castle.Windsor">
-      <Version>5.1.2</Version>
-    </PackageReference>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="protobuf-net">
-      <Version>3.0.29</Version>
+      <Version>3.1.4</Version>
     </PackageReference>
-    <PackageReference Include="Serilog">
-      <Version>2.10.0</Version>
+    <PackageReference Include="Serilog" Version="2.11.0">
+      <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
     <PackageReference Include="Serilog.Sinks.Console">
       <Version>4.0.1</Version>
@@ -135,9 +45,17 @@
     <PackageReference Include="Serilog.Sinks.File">
       <Version>5.0.0</Version>
     </PackageReference>
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0">
+      <TreatAsUsed>true</TreatAsUsed>
+    </PackageReference>
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.3.326103">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.0">
+      <TreatAsUsed>true</TreatAsUsed>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Com-MainIcon.ico" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
