@@ -39,7 +39,6 @@
             this.popupMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.popupMenuReconnect = new System.Windows.Forms.ToolStripMenuItem();
             this.popupMenuDisconnect = new System.Windows.Forms.ToolStripMenuItem();
-            this.spContainer = new System.Windows.Forms.SplitContainer();
             this.txtSendText = new System.Windows.Forms.TextBox();
             this.btnSend = new System.Windows.Forms.Button();
             this.pnlOptions = new System.Windows.Forms.Panel();
@@ -56,33 +55,31 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblStatus2 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.grpBoxSend = new System.Windows.Forms.GroupBox();
+            this.grpBoxRecieveData = new System.Windows.Forms.GroupBox();
             this.txtBoxMenu.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.spContainer)).BeginInit();
-            this.spContainer.Panel1.SuspendLayout();
-            this.spContainer.Panel2.SuspendLayout();
-            this.spContainer.SuspendLayout();
             this.pnlOptions.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.grpBoxSend.SuspendLayout();
+            this.grpBoxRecieveData.SuspendLayout();
             this.SuspendLayout();
             // 
             // txtRecievedData
             // 
             this.txtRecievedData.AccessibleRole = System.Windows.Forms.AccessibleRole.Grip;
-            this.txtRecievedData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtRecievedData.AutoWordSelection = true;
             this.txtRecievedData.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtRecievedData.ContextMenuStrip = this.txtBoxMenu;
+            this.txtRecievedData.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtRecievedData.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtRecievedData.Location = new System.Drawing.Point(5, -1);
+            this.txtRecievedData.Location = new System.Drawing.Point(6, 19);
             this.txtRecievedData.Margin = new System.Windows.Forms.Padding(2);
             this.txtRecievedData.Name = "txtRecievedData";
             this.txtRecievedData.ReadOnly = true;
             this.txtRecievedData.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.txtRecievedData.Size = new System.Drawing.Size(674, 358);
+            this.txtRecievedData.Size = new System.Drawing.Size(915, 413);
             this.txtRecievedData.TabIndex = 2;
             this.txtRecievedData.Text = "";
             // 
@@ -138,48 +135,16 @@
             this.popupMenuDisconnect.Text = "Disconnect";
             this.popupMenuDisconnect.Click += new System.EventHandler(this.popupMenuDisconnect_Click);
             // 
-            // spContainer
-            // 
-            this.spContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.spContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-            this.spContainer.IsSplitterFixed = true;
-            this.spContainer.Location = new System.Drawing.Point(3, 5);
-            this.spContainer.Margin = new System.Windows.Forms.Padding(2);
-            this.spContainer.MinimumSize = new System.Drawing.Size(600, 180);
-            this.spContainer.Name = "spContainer";
-            this.spContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // spContainer.Panel1
-            // 
-            this.spContainer.Panel1.Controls.Add(this.txtSendText);
-            this.spContainer.Panel1.Controls.Add(this.btnSend);
-            this.spContainer.Panel1.Margin = new System.Windows.Forms.Padding(2);
-            this.spContainer.Panel1.Padding = new System.Windows.Forms.Padding(2);
-            this.spContainer.Panel1MinSize = 30;
-            // 
-            // spContainer.Panel2
-            // 
-            this.spContainer.Panel2.Controls.Add(this.txtRecievedData);
-            this.spContainer.Panel2MinSize = 100;
-            this.spContainer.Size = new System.Drawing.Size(681, 398);
-            this.spContainer.SplitterDistance = 30;
-            this.spContainer.SplitterWidth = 5;
-            this.spContainer.TabIndex = 3;
-            this.spContainer.Resize += new System.EventHandler(this.spContainer_Resize);
-            // 
             // txtSendText
             // 
-            this.txtSendText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtSendText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSendText.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSendText.Location = new System.Drawing.Point(5, 6);
+            this.txtSendText.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSendText.Location = new System.Drawing.Point(6, 21);
             this.txtSendText.Margin = new System.Windows.Forms.Padding(3, 5, 3, 3);
             this.txtSendText.MaxLength = 512;
             this.txtSendText.Name = "txtSendText";
-            this.txtSendText.Size = new System.Drawing.Size(584, 23);
+            this.txtSendText.Size = new System.Drawing.Size(829, 25);
             this.txtSendText.TabIndex = 1;
             // 
             // btnSend
@@ -187,7 +152,7 @@
             this.btnSend.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSend.Enabled = false;
             this.btnSend.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSend.Location = new System.Drawing.Point(595, 5);
+            this.btnSend.Location = new System.Drawing.Point(841, 21);
             this.btnSend.Name = "btnSend";
             this.btnSend.Size = new System.Drawing.Size(80, 26);
             this.btnSend.TabIndex = 0;
@@ -197,16 +162,15 @@
             // 
             // pnlOptions
             // 
-            this.pnlOptions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlOptions.Controls.Add(this.flowLayoutPanel1);
             this.pnlOptions.Controls.Add(this.flowLayoutPanel2);
-            this.pnlOptions.Location = new System.Drawing.Point(3, 407);
+            this.pnlOptions.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlOptions.Location = new System.Drawing.Point(0, 491);
             this.pnlOptions.Margin = new System.Windows.Forms.Padding(2);
             this.pnlOptions.MinimumSize = new System.Drawing.Size(580, 25);
             this.pnlOptions.Name = "pnlOptions";
             this.pnlOptions.Padding = new System.Windows.Forms.Padding(2);
-            this.pnlOptions.Size = new System.Drawing.Size(681, 30);
+            this.pnlOptions.Size = new System.Drawing.Size(927, 30);
             this.pnlOptions.TabIndex = 5;
             // 
             // flowLayoutPanel1
@@ -254,7 +218,7 @@
             this.flowLayoutPanel2.Controls.Add(this.btnQuickConnect);
             this.flowLayoutPanel2.Controls.Add(this.btnExitApp);
             this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(340, 0);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(586, 0);
             this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(1);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Padding = new System.Windows.Forms.Padding(4, 2, 2, 2);
@@ -321,10 +285,10 @@
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.lblStatus,
             this.lblStatus2});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 439);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 521);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 16, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(684, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(927, 22);
             this.statusStrip1.TabIndex = 6;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -340,14 +304,39 @@
             this.lblStatus2.Size = new System.Drawing.Size(18, 17);
             this.lblStatus2.Text = " - ";
             // 
+            // grpBoxSend
+            // 
+            this.grpBoxSend.Controls.Add(this.txtSendText);
+            this.grpBoxSend.Controls.Add(this.btnSend);
+            this.grpBoxSend.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpBoxSend.Location = new System.Drawing.Point(0, 0);
+            this.grpBoxSend.Name = "grpBoxSend";
+            this.grpBoxSend.Size = new System.Drawing.Size(927, 56);
+            this.grpBoxSend.TabIndex = 7;
+            this.grpBoxSend.TabStop = false;
+            this.grpBoxSend.Text = "Send text";
+            // 
+            // grpBoxRecieveData
+            // 
+            this.grpBoxRecieveData.Controls.Add(this.txtRecievedData);
+            this.grpBoxRecieveData.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.grpBoxRecieveData.Location = new System.Drawing.Point(0, 56);
+            this.grpBoxRecieveData.Name = "grpBoxRecieveData";
+            this.grpBoxRecieveData.Padding = new System.Windows.Forms.Padding(6, 3, 6, 3);
+            this.grpBoxRecieveData.Size = new System.Drawing.Size(927, 435);
+            this.grpBoxRecieveData.TabIndex = 8;
+            this.grpBoxRecieveData.TabStop = false;
+            this.grpBoxRecieveData.Text = "Recieved Data";
+            // 
             // MainForm
             // 
             this.AcceptButton = this.btnSend;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(684, 461);
+            this.ClientSize = new System.Drawing.Size(927, 543);
+            this.Controls.Add(this.grpBoxRecieveData);
+            this.Controls.Add(this.grpBoxSend);
             this.Controls.Add(this.pnlOptions);
             this.Controls.Add(this.statusStrip1);
-            this.Controls.Add(this.spContainer);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -358,17 +347,15 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.txtBoxMenu.ResumeLayout(false);
-            this.spContainer.Panel1.ResumeLayout(false);
-            this.spContainer.Panel1.PerformLayout();
-            this.spContainer.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.spContainer)).EndInit();
-            this.spContainer.ResumeLayout(false);
             this.pnlOptions.ResumeLayout(false);
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             this.flowLayoutPanel2.ResumeLayout(false);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.grpBoxSend.ResumeLayout(false);
+            this.grpBoxSend.PerformLayout();
+            this.grpBoxRecieveData.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -376,7 +363,6 @@
 
         #endregion
         private System.Windows.Forms.RichTextBox txtRecievedData;
-        private System.Windows.Forms.SplitContainer spContainer;
         private System.Windows.Forms.TextBox txtSendText;
         private System.Windows.Forms.Button btnSend;
         private System.Windows.Forms.ContextMenuStrip txtBoxMenu;
@@ -400,6 +386,8 @@
         private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.Button btnQuickConnect;
         private System.Windows.Forms.ToolStripStatusLabel lblStatus2;
+        private System.Windows.Forms.GroupBox grpBoxSend;
+        private System.Windows.Forms.GroupBox grpBoxRecieveData;
     }
 }
 

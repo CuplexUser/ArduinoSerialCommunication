@@ -25,7 +25,7 @@ namespace SerialMonitor.Service
         /// <summary>
         ///     The serial COM wait handle
         /// </summary>
-        private readonly AutoResetEvent _serialComWaitHandle;
+        private AutoResetEvent _serialComWaitHandle;
 
         /// <summary>
         ///     The is reading serial data
@@ -111,8 +111,13 @@ namespace SerialMonitor.Service
         public void Dispose()
         {
             _serialComThreadActive = false;
-            _serialComWaitHandle.Set();
-            _serialComWaitHandle.Dispose();
+            if (_serialComWaitHandle != null)
+            {
+                _serialComWaitHandle.Close();
+                _serialComWaitHandle.Dispose();
+                _serialComWaitHandle = null;
+            }
+            
             _serialPort?.Dispose();
         }
 

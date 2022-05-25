@@ -3,10 +3,10 @@ using System.Runtime.Serialization;
 
 namespace StorageModule.DataModels
 {
-    [DataContract(Name = "AppSettingsDataModel")]
-    public class AppSettingsDataModel
+    [DataContract(Name = "ApplicationSettingsDataModel", Namespace = "StorageModule.DataModels")]
+    public class ApplicationSettingsDataModel
     {
-        [DataMember(Name = "Status", Order = 1)]
+        [DataMember(Name = "ConnectionStatus", Order = 1)]
         [DefaultValue((int)ConnectionStatusModel.None)]
         public int ConnectionStatus { get; set; }
 
@@ -19,11 +19,5 @@ namespace StorageModule.DataModels
         [DataMember(Name = "BaudRate", Order = 4)]
         public int BaudRate { get; set; }
 
-        public AppSettingsDataModel()
-        {
-            ConnectionStatus = (int)ConnectionStatusModel.None;
-        }
-
-        
     }
 }

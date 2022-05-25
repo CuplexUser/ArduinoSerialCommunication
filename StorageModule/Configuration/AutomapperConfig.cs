@@ -6,7 +6,7 @@ namespace StorageModule.Configuration
     {
         public SerialMonitorMapperProfile()
         {
-            //AppSettingsDataModel.CreateMapping(this);
+            //ApplicationSettingsDataModel.CreateMapping(this);
 
         }
 

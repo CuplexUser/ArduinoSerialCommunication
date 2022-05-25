@@ -9,7 +9,7 @@ using SerialMonitor.Properties;
 using SerialMonitor.Service;
 using StorageModule.Models;
 using StorageModule.Models.Enums;
-using StorageModule.Provider;
+using StorageModule.Services;
 
 namespace SerialMonitor
 {
@@ -23,42 +23,37 @@ namespace SerialMonitor
         /// The serial COM service
         /// </summary>
         private readonly SerialComService _serialComService = SerialComService.Instance;
-
-        private readonly AppSettingsModel _applicationState;
-        //private readonly Settings _appSettings;
-
+        private readonly ApplicationSettingsService _appSettingsService;
+        private ApplicationSettingsModel _applicationState;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainForm"/> class.
         /// </summary>
-        public MainForm()
+        public MainForm(ApplicationSettingsService appSettingsService)
         {
-            InitializeComponent();
-            var settingsProvider = new AppSettingsProvider();
-            _applicationState = settingsProvider.LoadSettings<AppSettingsModel>();
+            _appSettingsService = appSettingsService;
+            // Loaded from Program.cs aswell
+            appSettingsService.LoadSettings();
 
+            _applicationState = appSettingsService.Settings;
             if (_applicationState == null)
             {
-                _applicationState = new AppSettingsModel
-                {
-                    AutoScrollText = true,
-                    BaudRate = 115200,
-                    EnableTimestamps = true,
-                    Status = ConnectionStatus.None
-                };
+                throw new ArgumentException("MainForm-Constructor: Application State Cannot Be null! {Settings}", nameof(ApplicationSettingsService.Settings));
             }
+
+            InitializeComponent();
+            ApplicationSettingsService applicationSettingsService = _appSettingsService;
+
+            var defSettings= new ApplicationSettingsModel
+            {
+                AutoScrollText = true,
+                BaudRate = 115200,
+                EnableTimestamps = true,
+                Status = ConnectionStatus.None
+            };
         }
 
-        /// <summary>
-        /// Handles the Resize event of the spContainer control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void spContainer_Resize(object sender, EventArgs e)
-        {
-            spContainer.PerformAutoScale();
-        }
-
+    
         /// <summary>
         /// Handles the Load event of the MainForm control.
         /// </summary>
@@ -378,10 +373,16 @@ namespace SerialMonitor
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             // Save Settings
-
-
+            if (_serialComService.IsConnected)
+            {
+                _serialComService.Disconnect();
+                _serialComService.Dispose();
+            }
+            Enabled = false;
             e.Cancel = false;
 
+
+            _appSettingsService.SaveSettings();
         }
     }
 }
