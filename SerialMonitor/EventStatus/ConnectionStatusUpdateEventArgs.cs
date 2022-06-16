@@ -4,16 +4,14 @@ using StorageModule.Models.Enums;
 namespace SerialMonitor.EventStatus
 {
 
-   public class SerialConStatusChangedEventArgs : EventArgs
+   public class SerialConnectionStateEventArgs : EventArgs
     {
-
-
-        public SerialConStatusChangedEventArgs(ConnectionStatus connectionStatus)
+        public SerialConnectionStateEventArgs(ConnectionStatus connectionStatus)
         {
             ActiveStatus = connectionStatus;
         }
 
-        public SerialConStatusChangedEventArgs(ConnectionStatus status, string message)
+        public SerialConnectionStateEventArgs(ConnectionStatus status, string message)
         {
             ActiveStatus = status;
             Message = message;

@@ -19,5 +19,11 @@ namespace StorageModule.DataModels
         [DataMember(Name = "BaudRate", Order = 4)]
         public int BaudRate { get; set; }
 
+        [DataMember(Name = "NewlineOption", Order = 5)]
+        public string NewlineOption { get; set; } 
+        
+        [DataMember(Name = "SelectedComPort", Order = 6)]
+        public string SelectedComPort { get; set; }
+
     }
 }

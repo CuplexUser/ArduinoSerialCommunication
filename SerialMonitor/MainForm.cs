@@ -79,8 +79,8 @@ namespace SerialMonitor
         /// Handles the SerialConnectionStateChanged event of the _serialComService control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
-        /// <param name="args">The <see cref="EventStatus.SerialConStatusChangedEventArgs"/> instance containing the event data.</param>
-        private void _serialComService_SerialConnectionStateChanged(object sender, SerialConStatusChangedEventArgs args)
+        /// <param name="args">The <see cref="SerialConnectionStateEventArgs"/> instance containing the event data.</param>
+        private void _serialComService_SerialConnectionStateChanged(object sender, SerialConnectionStateEventArgs args)
         {
             if (args.ActiveStatus == ConnectionStatus.Connected)
             {

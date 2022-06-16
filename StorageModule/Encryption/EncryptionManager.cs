@@ -33,7 +33,7 @@ namespace StorageModule.Encryption
             return result;
         }
 
-        public bool EncryptAndSaveFile(string filePath, MemoryStream ms, string passwordString, CryptoProgress progress)
+        private bool EncryptAndSaveFile(string filePath, MemoryStream ms, string passwordString, CryptoProgress progress)
         {
             FileStream fs = null;
 
@@ -111,7 +111,7 @@ namespace StorageModule.Encryption
             return result;
         }
 
-        public MemoryStream DecryptFileToMemoryStream(string filePath, string passwordString, CryptoProgress progress)
+        private MemoryStream DecryptFileToMemoryStream(string filePath, string passwordString, CryptoProgress progress)
         {
             var ms = new MemoryStream();
             FileStream fs = null;
@@ -187,7 +187,6 @@ namespace StorageModule.Encryption
             using (Aes aesAlg = Aes.Create())
             {
                 var rfc2898DeriveBytes = new Rfc2898DeriveBytes(password, SALT, 1000);
-                if (aesAlg == null) return msDecrypted.ToArray();
                 aesAlg.BlockSize = 128;
                 aesAlg.KeySize = 256;
                 aesAlg.Padding = PaddingMode.PKCS7;
@@ -224,7 +223,6 @@ namespace StorageModule.Encryption
             using (Aes aesAlg = Aes.Create())
             {
                 var rfc2898DeriveBytes = new Rfc2898DeriveBytes(password, SALT, 1000);
-                if (aesAlg == null) return msEncodedData.ToArray();
                 aesAlg.BlockSize = 128;
                 aesAlg.KeySize = 256;
                 aesAlg.Padding = PaddingMode.PKCS7;
@@ -256,50 +254,7 @@ namespace StorageModule.Encryption
 
             return msEncodedData.ToArray();
         }
-
-        public static byte[] EncryptObject(object obj, string passwordString)
-        {
-            var binaryFormatter = new BinaryFormatter();
-            var ms = new MemoryStream();
-            var msEncodedData = new MemoryStream();
-            binaryFormatter.Serialize(ms, obj);
-
-            using (Aes aesAlg = Aes.Create())
-            {
-                var rfc2898DeriveBytes = new Rfc2898DeriveBytes(passwordString, SALT, 1000);
-                if (aesAlg == null) return msEncodedData.ToArray();
-                aesAlg.BlockSize = 128;
-                aesAlg.KeySize = 256;
-                aesAlg.Padding = PaddingMode.PKCS7;
-                aesAlg.Mode = CipherMode.CBC;
-
-                aesAlg.Key = rfc2898DeriveBytes.GetBytes(32);
-                aesAlg.IV = rfc2898DeriveBytes.GetBytes(16);
-
-                // Create a cncrytor to perform the stream transform.
-                ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
-
-                // Create the streams used for encryption.
-                int bufferSize = (int)Math.Min(MaxBufferSize, ms.Length);
-                var buffer = new byte[bufferSize];
-                ms.Position = 0;
-
-                using (var csEncrypt = new CryptoStream(msEncodedData, encryptor, CryptoStreamMode.Write))
-                {
-                    int bytesRead;
-                    while ((bytesRead = ms.Read(buffer, 0, buffer.Length)) > 0)
-                    {
-                        csEncrypt.Write(buffer, 0, bytesRead);
-                    }
-
-                    csEncrypt.FlushFinalBlock();
-                    msEncodedData.Flush();
-                }
-            }
-
-            return msEncodedData.ToArray();
-        }
-
+        
         #region simple string encryption
 
         public static void EncodeString(ref byte[] buffer, string plaintext, string key)
@@ -308,7 +263,6 @@ namespace StorageModule.Encryption
             using (Aes aesAlg = Aes.Create())
             {
                 var rfc2898DeriveBytes = new Rfc2898DeriveBytes(key, SALT2, 1000);
-                if (aesAlg == null) return;
                 aesAlg.BlockSize = 128;
                 aesAlg.KeySize = 256;
                 aesAlg.Padding = PaddingMode.PKCS7;

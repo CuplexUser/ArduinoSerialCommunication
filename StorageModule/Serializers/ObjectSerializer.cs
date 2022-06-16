@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using ProtoBuf;
 using StorageModule.Helpers;
 
@@ -10,12 +9,12 @@ namespace StorageModule.Serializers
 {
     public class ObjectSerializer<T>
     {
-        public T DeserializeObjectFromByteArray(byte[] byteData, bool useProtobuffer)
+        public T DeserializeObjectFromByteArray(byte[] byteData)
         {
-            return useProtobuffer ? DeserializeProtoBufferObjectDataInternal(byteData) : DeserializeBinaryFormatterObjectDataInternal(byteData);
+            return DeserializeProtoBufferObjectDataInternal(byteData);
         }
 
-        public T DeserializeObjectFromString(string data, StringSerializationFormat format, bool useProtobuffer)
+        public T DeserializeObjectFromString(string data, StringSerializationFormat format, bool useProtobuffer=true)
         {
             byte[] byteData = null;
             switch (format)
@@ -27,10 +26,13 @@ namespace StorageModule.Serializers
                     byteData = DataConverter.HexStringToByteArray(data);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException("format");
+                    throw new ArgumentOutOfRangeException(nameof(format));
             }
 
-            return useProtobuffer ? DeserializeProtoBufferObjectDataInternal(byteData) : DeserializeBinaryFormatterObjectDataInternal(byteData);
+            if (!useProtobuffer)
+                throw new ArgumentException("Only protobuffer Deserialization is supported");
+
+            return  DeserializeProtoBufferObjectDataInternal(byteData);
         }
 
         public byte[] SerializeToByteArray(T obj)
@@ -40,7 +42,7 @@ namespace StorageModule.Serializers
 
             if (protoBufferCompatible)
                 return SerializeUsingProtoBuffersInternal(obj);
-            return SerializeUsingBinaryFormatterInternal(obj);
+            throw new ArgumentException($"obj of type({obj.GetType()}) Could not be Serialized");
         }
 
         #region Private Byte Array layer
@@ -52,26 +54,10 @@ namespace StorageModule.Serializers
             return ms.ToArray();
         }
 
-        private byte[] SerializeUsingBinaryFormatterInternal(T serializableObject)
-        {
-            MemoryStream ms = new MemoryStream();
-            BinaryFormatter binaryFormatter = new BinaryFormatter();
-            binaryFormatter.Serialize(ms, serializableObject);
-            return ms.ToArray();
-        }
-
         private T DeserializeProtoBufferObjectDataInternal(byte[] data)
         {
             MemoryStream ms = new MemoryStream(data);
             return Serializer.Deserialize<T>(ms);
-        }
-
-        private T DeserializeBinaryFormatterObjectDataInternal(byte[] data)
-        {
-            BinaryFormatter binaryFormatter = new BinaryFormatter();
-            MemoryStream ms = new MemoryStream(data);
-
-            return (T) binaryFormatter.Deserialize(ms);
         }
 
         #endregion

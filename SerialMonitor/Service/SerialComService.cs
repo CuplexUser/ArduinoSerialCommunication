@@ -121,12 +121,12 @@ namespace SerialMonitor.Service
         /// <summary>
         ///     Occurs when [serial connection state changed].
         /// </summary>
-        public event EventDelegates.SerialConnectionStateEventHandler SerialConnectionStateChanged;
+        public event SerialEventHandlers.SerialConnectionUpdateStateEventHandler SerialConnectionStateChanged;
 
         /// <summary>
         ///     Occurs when [serial data received].
         /// </summary>
-        public event EventDelegates.SerialDataReceivedEventHandler SerialDataReceived;
+        public event SerialEventHandlers.SerialDataReceivedEventHandler SerialDataReceived;
 
 
         /// <summary>
@@ -151,7 +151,7 @@ namespace SerialMonitor.Service
                     IsReadingSerialData = false;
                     LastError = exception.Message;
                     _serialComWaitHandle.Reset();
-                    SerialConnectionStateChanged?.Invoke(this, new SerialConStatusChangedEventArgs(ConnectionStatus.Error, exception.Message));
+                    SerialConnectionStateChanged?.Invoke(this, new SerialConnectionStateEventArgs(ConnectionStatus.Error, exception.Message));
                 }
         }
 
@@ -219,11 +219,11 @@ namespace SerialMonitor.Service
                 _serialPort.ErrorReceived += OnSerialPort_ErrorReceived;
 
                 StartSerialReadTask();
-                SerialConnectionStateChanged?.Invoke(this, new SerialConStatusChangedEventArgs(_serialPort.IsOpen ? ConnectionStatus.Connected : ConnectionStatus.Disconnected));
+                SerialConnectionStateChanged?.Invoke(this, new SerialConnectionStateEventArgs(_serialPort.IsOpen ? ConnectionStatus.Connected : ConnectionStatus.Disconnected));
             }
             catch (Exception exception)
             {
-                SerialConnectionStateChanged?.Invoke(this, new SerialConStatusChangedEventArgs(ConnectionStatus.Error, exception.Message));
+                SerialConnectionStateChanged?.Invoke(this, new SerialConnectionStateEventArgs(ConnectionStatus.Error, exception.Message));
                 LastError = exception.Message;
                 return false;
             }
@@ -244,7 +244,7 @@ namespace SerialMonitor.Service
         /// <param name="e">The <see cref="SerialErrorReceivedEventArgs" /> instance containing the event data.</param>
         private void OnSerialPort_ErrorReceived(object sender, SerialErrorReceivedEventArgs e)
         {
-            SerialConnectionStateChanged?.Invoke(this, new SerialConStatusChangedEventArgs(ConnectionStatus.Error, e.EventType.ToString()));
+            SerialConnectionStateChanged?.Invoke(this, new SerialConnectionStateEventArgs(ConnectionStatus.Error, e.EventType.ToString()));
         }
 
 
@@ -271,7 +271,7 @@ namespace SerialMonitor.Service
                 {
                     _logger.Information("Disconnected from serialport {port}", _serialPort.PortName);
                     _serialPort.Close();
-                    SerialConnectionStateChanged?.Invoke(this, new SerialConStatusChangedEventArgs(ConnectionStatus.Disconnected));
+                    SerialConnectionStateChanged?.Invoke(this, new SerialConnectionStateEventArgs(ConnectionStatus.Disconnected));
                 }
 
                 _serialPort.DataReceived -= OnSerialPort_DataReceived;

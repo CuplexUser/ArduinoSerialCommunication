@@ -2,6 +2,8 @@
 using System.Windows.Forms;
 using SerialMonitor.Helpers;
 using SerialMonitor.Service;
+using Serilog;
+using StorageModule.Services;
 
 namespace SerialMonitor
 {
@@ -13,8 +15,11 @@ namespace SerialMonitor
     {
         /// <summary>
         /// The serial COM service
-        /// </summary>
+        /// </summary> 
         private readonly SerialComService _serialComService;
+
+        private readonly ApplicationSettingsService _settingsService;
+
         /// <summary>
         /// The default baud rate
         /// </summary>
@@ -23,9 +28,10 @@ namespace SerialMonitor
         /// <summary>
         /// Initializes a new instance of the <see cref="SerialConnectionSettings"/> class.
         /// </summary>
-        public SerialConnectionSettings(SerialComService serialComService)
+        public SerialConnectionSettings(SerialComService serialComService, ApplicationSettingsService settingsService)
         {
             _serialComService = serialComService;
+            _settingsService = settingsService;
             InitializeComponent();
         }
 
@@ -171,5 +177,22 @@ namespace SerialMonitor
             RefreshCom();
         }
 
+        private void SerialConnectionSettings_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                // Update settings
+                var settings = _settingsService.Settings;
+                int baudRate = Convert.ToInt32(drpBaudRate.SelectedItem.ToString());
+                settings.BaudRate = baudRate;
+                settings.NewlineOption = drpRowOptions.SelectedItem as string;
+
+                if (drpPorts.Items.Count > 0 && drpPorts.SelectedItem != null)
+                    settings.SelectedComPort = drpPorts.SelectedItem.ToString();
+
+                if (!_settingsService.SaveSettings())
+                    Log.Warning("Failed to save settings when closing Connection Settings Form");
+            }
+        }
     }
 }
