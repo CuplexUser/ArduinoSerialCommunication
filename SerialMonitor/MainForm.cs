@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using Autofac;
@@ -8,6 +9,7 @@ using SerialMonitor.EventStatus;
 using SerialMonitor.Helpers;
 using SerialMonitor.Properties;
 using SerialMonitor.Service;
+using Serilog;
 using StorageModule.Models;
 using StorageModule.Models.Enums;
 using StorageModule.Services;
@@ -48,7 +50,7 @@ namespace SerialMonitor
             InitializeComponent();
             ApplicationSettingsService applicationSettingsService = _appSettingsService;
 
-            var defSettings= new ApplicationSettingsModel
+            var defSettings = new ApplicationSettingsModel
             {
                 AutoScrollText = true,
                 BaudRate = 115200,
@@ -57,7 +59,7 @@ namespace SerialMonitor
             };
         }
 
-    
+
         /// <summary>
         /// Handles the Load event of the MainForm control.
         /// </summary>
@@ -221,6 +223,13 @@ namespace SerialMonitor
 
             bool result = _serialComService.Connect(portName, defBaudRate);
             lblStatus2.Text = result ? "Quick Connect Successful" : "Quick connect failed.";
+            if (!result)
+                Log.Warning("Failed to connect to {portName} at {BaudRate}", portName, defBaudRate);
+
+            //if (result)
+            //    Log.Information("Successfully connected to {portName} at {BaudRate}",portName,defBaudRate);
+            //else
+            //    Log.Information("Failed to connect connected to {portName} with {BaudRate}", portName, defBaudRate);
         }
 
         private void UpdateGuiFromAppState()
@@ -243,16 +252,15 @@ namespace SerialMonitor
             {
                 statusText = "Connected";
                 btnSend.Enabled = true;
-                //btnQuickConnect.Enabled = false;
                 btnQuickConnect.Text = "Disconnect";
-
+                btnQuickConnect.Enabled = true;
             }
             else if (_applicationState.Status == ConnectionStatus.Disconnected)
             {
                 statusText = "Disconnected";
                 btnSend.Enabled = false;
                 btnQuickConnect.Text = "Quick Connect";
-                //btnQuickConnect.Enabled = true;
+                btnQuickConnect.Enabled = true;
             }
             else if (_applicationState.Status == ConnectionStatus.None)
             {
@@ -314,7 +322,12 @@ namespace SerialMonitor
 
         private void popupMenuDisconnect_Click(object sender, EventArgs e)
         {
-
+            if (_applicationState.Status == ConnectionStatus.Connected)
+            {
+                var connInfo = _serialComService.GetConnectionStatus();
+                Log.Information("Disconnecting from {port}", connInfo.ComPort);
+                _serialComService.Disconnect();
+            }
         }
 
         private void popupMenuOpenFile_Click(object sender, EventArgs e)

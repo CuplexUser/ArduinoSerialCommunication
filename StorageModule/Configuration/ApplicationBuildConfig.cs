@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Windows.Forms;
 
 namespace StorageModule.Configuration
 {
@@ -10,26 +11,21 @@ namespace StorageModule.Configuration
         private static string _userDataPath;
         private static Assembly _serialMonitorAssembly;
 
-        public static string ApplicationLogFilePath() => Path.Combine(ApplicationBuildConfig.UserDataPath, Assembly.GetCallingAssembly().GetName().Name + DateTime.Today.ToString("yyyy-MM-dd") + ".log");
+        public static string ApplicationLogFilePath() => Path.Combine(UserDataPath, $"{Application.ProductName}-{DateTime.Today.ToString("yyyy-MM-dd")}.log");
 
-        public static string UserDataPath => ApplicationBuildConfig._userDataPath ?? (ApplicationBuildConfig._userDataPath = ApplicationBuildConfig.GetUserDataPath());
+        public static string UserDataPath => _userDataPath ?? (_userDataPath = GetUserDataPath());
 
-        public static bool DebugMode => ApplicationBuildConfig.IsDebug(Assembly.GetCallingAssembly());
+        public static bool DebugMode => IsDebug(Assembly.GetCallingAssembly());
 
-        private static string GetUserDataPath() => ApplicationBuildConfig.DebugMode ? ApplicationBuildConfig.GetAssemblyPath(Assembly.GetExecutingAssembly().Location) : Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\" + Assembly.GetEntryAssembly()?.GetName().Name.Replace(" ", "") + "\\";
+        private static string GetUserDataPath() => DebugMode ? GetAssemblyPath() :
+            Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Application.CompanyName, Application.ProductName);
 
         // Used in debug mode when the log file is created in the same directory as the Main Executring Assembly
-        public static void SetOverrideUserDataPath(string path) => ApplicationBuildConfig._userDataPath = path;
+        public static void SetOverrideUserDataPath(string path) => _userDataPath = path;
 
-        private static string GetAssemblyPath(string fullAssemblyPath)
+        private static string GetAssemblyPath()
         {
-            if (fullAssemblyPath != null)
-            {
-                int num = fullAssemblyPath.LastIndexOf('\\');
-                if (num > 0)
-                    return fullAssemblyPath.Substring(0, num + 1);
-            }
-            return (string)null;
+            return Path.GetDirectoryName(Application.ExecutablePath);
         }
 
         private static bool IsDebug(Assembly assembly)

@@ -37,7 +37,11 @@ namespace SerialMonitor
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Log.Verbose("Application started");
+
+            if (debugMode)
+                Log.Information("Application Starting, {AppName}, MachineName: {MachineName}", Application.ProductName, Environment.MachineName);
+            else
+                Log.Verbose("Application started");
 
             using (var scope = Container.BeginLifetimeScope())
             {
@@ -52,8 +56,6 @@ namespace SerialMonitor
                     Log.Error("Failed to load application settings on program load. User data path {userDataPath}", userDataPath);
                 }
 
-
-
                 Task.Delay(100);
                 try
                 {
@@ -64,6 +66,8 @@ namespace SerialMonitor
                 {
                     Log.Fatal(ex, "Main program failureException: {Message}", ex.Message);
                 }
+
+                Log.CloseAndFlush();
             }
         }
 

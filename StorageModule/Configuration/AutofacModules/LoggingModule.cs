@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Text;
 using Autofac;
 using AutofacSerilogIntegration;
 using Serilog;
@@ -12,26 +13,19 @@ namespace StorageModule.Configuration.AutofacModules
     {
         protected override void Load(ContainerBuilder builder)
         {
-            var logLevel = LogEventLevel.Debug;
-            string logFilePath;
-            if (!ApplicationBuildConfig.DebugMode)
+            var logLevel = LogEventLevel.Warning;
+            string logFilePath = ApplicationBuildConfig.ApplicationLogFilePath();
+
+            if (ApplicationBuildConfig.DebugMode)
             {
-                logLevel = LogEventLevel.Warning;
-                logFilePath = ApplicationBuildConfig.ApplicationLogFilePath();
+                logLevel = LogEventLevel.Verbose;
             }
-            else
-            {
-                logFilePath = Path.Combine(Directory.GetCurrentDirectory(), $"SerialMonitor{DateTime.Today.ToString("yyyy-MM-dd")}.log");
-            }
+
 
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.Console(LogEventLevel.Debug, standardErrorFromLevel: LogEventLevel.Error, formatProvider: CultureInfo.InvariantCulture)
-                .WriteTo.File(logFilePath,
-                    fileSizeLimitBytes: 1048576,
-                    retainedFileCountLimit: 31,
-                    restrictedToMinimumLevel: logLevel,
-                    buffered: false,
-                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.ff} [{Level}] {Message}{NewLine}{Exception}{Data}")
+                .WriteTo.File(path:logFilePath,restrictedToMinimumLevel: LogEventLevel.Information,retainedFileTimeLimit:TimeSpan.FromDays(30),
+                    rollingInterval:RollingInterval.Day,rollOnFileSizeLimit:false,encoding:Encoding.UTF8)
                 .Enrich.FromLogContext()
                 .MinimumLevel.Is(logLevel)
                 .CreateLogger();

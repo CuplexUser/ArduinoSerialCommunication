@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using SerialMonitor.EventStatus;
+using SerialMonitor.Models;
 using Serilog;
 using StorageModule.Models.Enums;
 
@@ -225,6 +226,7 @@ namespace SerialMonitor.Service
             {
                 SerialConnectionStateChanged?.Invoke(this, new SerialConnectionStateEventArgs(ConnectionStatus.Error, exception.Message));
                 LastError = exception.Message;
+                _logger.Error(exception, "Connection exception using {portName}, {Baudrate}", portName, baudRate.ToString());
                 return false;
             }
 
@@ -269,7 +271,7 @@ namespace SerialMonitor.Service
             {
                 if (_serialPort.IsOpen)
                 {
-                    _logger.Information("Disconnected from serialport {port}", _serialPort.PortName);
+                    //_logger.Information("Disconnected from serialport {port}", _serialPort.PortName);
                     _serialPort.Close();
                     SerialConnectionStateChanged?.Invoke(this, new SerialConnectionStateEventArgs(ConnectionStatus.Disconnected));
                 }
@@ -314,6 +316,13 @@ namespace SerialMonitor.Service
             }
 
             return false;
+        }
+
+        public ConnectionStateModel GetConnectionStatus()
+        {
+            if (_serialPort!=null)
+                return new ConnectionStateModel {BaudRate = _serialPort.BaudRate.ToString(), ComPort = _serialPort.PortName, IsConnected = _serialPort.IsOpen};
+            return ConnectionStateModel.NoConnectionInfo;
         }
     }
 }
