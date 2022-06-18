@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Forms;
 using SerialMonitor.Helpers;
 using SerialMonitor.Service;
@@ -42,6 +43,9 @@ namespace SerialMonitor
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void SerialConnectionSettings_Load(object sender, EventArgs e)
         {
+            _settingsService.LoadSettings();
+            var appSettings = _settingsService.Settings;
+
             PopulateComDrpList();
 
             var rates = _serialComService.GetBaudRates();
@@ -50,7 +54,9 @@ namespace SerialMonitor
                 drpBaudRate.Items.Add(rate);
             }
 
-            drpBaudRate.SelectedIndex = 0;
+
+            int index = Array.IndexOf(rates, appSettings.BaudRate.ToString(), 0);
+            drpBaudRate.SelectedIndex = index >= 0 ? index : 0;
 
 
             for (int i = 0; i < drpBaudRate.Items.Count; i++)

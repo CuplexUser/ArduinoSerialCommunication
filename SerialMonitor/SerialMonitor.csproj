@@ -58,8 +58,9 @@
   <PropertyGroup>
     <ManifestTimestampUrl>http://timestamp.digicert.com</ManifestTimestampUrl>
     <Nullable>disable</Nullable>
-    <Version>3.0.0</Version>
+    <Version>3.1.0</Version>
     <Company>Cuplex Org</Company>
+    <Copyright>Martin Dahl</Copyright>
   </PropertyGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">

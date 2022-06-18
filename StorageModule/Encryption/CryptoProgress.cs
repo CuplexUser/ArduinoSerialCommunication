@@ -1,5 +1,6 @@
 ﻿using System;
-using StorageModule.StorageManager;
+using GeneralToolkitLib.Storage.Models;
+
 
 namespace StorageModule.Encryption
 {
