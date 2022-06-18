@@ -11,6 +11,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="DependencyInjection\**" />
+    <Compile Remove="TestConfiguration\**" />
+    <EmbeddedResource Remove="DependencyInjection\**" />
+    <EmbeddedResource Remove="TestConfiguration\**" />
+    <None Remove="DependencyInjection\**" />
+    <None Remove="TestConfiguration\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.2.10" />
     <PackageReference Include="MSTest.TestFramework" Version="2.2.10" />
@@ -24,8 +33,6 @@
 
   <ItemGroup>
     <Folder Include="AppSettingTests\" />
-    <Folder Include="DependencyInjection\" />
-    <Folder Include="TestConfiguration\" />
   </ItemGroup>
 
 </Project>
