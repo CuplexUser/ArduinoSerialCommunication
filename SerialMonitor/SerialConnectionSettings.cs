@@ -9,7 +9,7 @@ using StorageModule.Services;
 namespace SerialMonitor
 {
     /// <summary>
-    /// 
+    /// Serial Connection Settings Form
     /// </summary>
     /// <seealso cref="System.Windows.Forms.Form" />
     public partial class SerialConnectionSettings : Form
@@ -43,33 +43,9 @@ namespace SerialMonitor
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void SerialConnectionSettings_Load(object sender, EventArgs e)
         {
-            _settingsService.LoadSettings();
-            var appSettings = _settingsService.Settings;
-
-            PopulateComDrpList();
-
-            var rates = _serialComService.GetBaudRates();
-            foreach (string rate in rates)
-            {
-                drpBaudRate.Items.Add(rate);
-            }
-
-
-            int index = Array.IndexOf(rates, appSettings.BaudRate.ToString(), 0);
-            drpBaudRate.SelectedIndex = index >= 0 ? index : 0;
-
-
-            for (int i = 0; i < drpBaudRate.Items.Count; i++)
-            {
-                if (drpBaudRate.Items[i].ToString() == DefaultBaudRate)
-                {
-                    drpBaudRate.SelectedIndex = i;
-                    break;
-                }
-            }
+            LoadState();
 
             InitNewlineOptions();
-
         }
 
         private void PopulateComDrpList()
@@ -187,17 +163,65 @@ namespace SerialMonitor
         {
             if (e.CloseReason == CloseReason.UserClosing)
             {
-                // Update settings
-                var settings = _settingsService.Settings;
-                int baudRate = Convert.ToInt32(drpBaudRate.SelectedItem.ToString());
-                settings.BaudRate = baudRate;
-                settings.NewlineOption = drpRowOptions.SelectedItem as string;
+                SaveState();
+            }
+        }
 
-                if (drpPorts.Items.Count > 0 && drpPorts.SelectedItem != null)
-                    settings.SelectedComPort = drpPorts.SelectedItem.ToString();
+        private void SaveState()
+        {
+            // Update settings
+            var settings = _settingsService.Settings;
+            int baudRate = Convert.ToInt32(drpBaudRate.SelectedItem.ToString());
+            settings.BaudRate = baudRate;
+            settings.NewlineOption = drpRowOptions.SelectedItem as string;
 
-                if (!_settingsService.SaveSettings())
-                    Log.Warning("Failed to save settings when closing Connection Settings Form");
+            if (drpPorts.Items.Count > 0 && drpPorts.SelectedItem != null)
+                settings.SelectedComPort = drpPorts.SelectedItem.ToString();
+
+            if (!_settingsService.SaveSettings())
+                Log.Warning("Failed to save settings when closing Connection Settings Form");
+        }
+
+        private void LoadState()
+        {
+            _settingsService.LoadSettings();
+            var appSettings = _settingsService.Settings;
+
+            PopulateComDrpList();
+
+            var rates = _serialComService.GetBaudRates();
+            foreach (string rate in rates)
+            {
+                drpBaudRate.Items.Add(rate);
+            }
+
+            // Selected previously set COM Port if it exists
+            if (!string.IsNullOrEmpty(appSettings.SelectedComPort))
+            {
+                foreach (var item in drpPorts.Items)
+                {
+                    string comPort = item as string;
+                    if (appSettings.SelectedComPort.Equals(comPort, StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        drpPorts.SelectedItem = item;
+                        break;
+                    }
+                }
+            }
+
+            int index = Array.IndexOf(rates, appSettings.BaudRate.ToString(), 0);
+            drpBaudRate.SelectedIndex = index >= 0 ? index : 0;
+
+            if (index < 0)
+            {
+                for (int i = 0; i < drpBaudRate.Items.Count; i++)
+                {
+                    if (drpBaudRate.Items[i].ToString() == DefaultBaudRate)
+                    {
+                        drpBaudRate.SelectedIndex = i;
+                        break;
+                    }
+                }
             }
         }
     }

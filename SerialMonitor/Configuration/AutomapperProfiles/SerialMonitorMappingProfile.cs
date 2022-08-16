@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using StorageModule.Models;
 
-namespace StorageModule.Configuration.AutomapperProfile
+namespace SerialMonitor.Configuration.AutomapperProfiles
 {
     public class SerialMonitorMappingProfile : Profile
     {

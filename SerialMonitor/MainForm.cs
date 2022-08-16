@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using Autofac;
@@ -28,7 +27,7 @@ namespace SerialMonitor
         private readonly SerialComService _serialComService;
         private readonly ApplicationSettingsService _appSettingsService;
         private readonly ILifetimeScope _scope;
-        private ApplicationSettingsModel _applicationState;
+        private readonly ApplicationSettingsModel _applicationState;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainForm"/> class.
@@ -72,10 +71,24 @@ namespace SerialMonitor
             Text = ApplicationDataHelper.GetMainFormTitle();
 
             _applicationState.Status = ConnectionStatus.None;
+            cmbSendText.AutoCompleteSource = AutoCompleteSource.CustomSource;
             UpdateGuiFromAppState();
         }
 
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Save Settings
+            if (_serialComService.IsConnected)
+            {
+                _serialComService.Disconnect();
+                _serialComService.Dispose();
+            }
+            Enabled = false;
+            e.Cancel = false;
 
+
+            _appSettingsService.SaveSettings();
+        }
 
         /// <summary>
         /// Handles the SerialConnectionStateChanged event of the _serialComService control.
@@ -181,6 +194,24 @@ namespace SerialMonitor
             txtRecievedData.Clear();
         }
 
+        private void SendMessage()
+        {
+            string mesage = cmbSendText.Text;
+
+            if (!string.IsNullOrEmpty(mesage))
+            {   
+                _serialComService.SendTextLine(mesage);
+                if (!cmbSendText.AutoCompleteCustomSource.Contains(mesage))
+                {
+                    cmbSendText.AutoCompleteCustomSource.Add(mesage);
+                    cmbSendText.Items.Add(mesage);
+                }
+
+                cmbSendText.SelectedItem = null;
+                cmbSendText.Text = string.Empty;
+            }
+        }
+
 
         /// <summary>
         /// Handles the Click event of the btnClear control.
@@ -199,9 +230,7 @@ namespace SerialMonitor
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void btnSend_Click(object sender, EventArgs e)
         {
-            _serialComService.SendTextLine(txtSendText.Text);
-            txtSendText.Clear();
-
+            SendMessage();
         }
 
         private void ConnectToFirstOpenComPort()
@@ -315,11 +344,6 @@ namespace SerialMonitor
             }
         }
 
-        private void popupMenuReconnect_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void popupMenuDisconnect_Click(object sender, EventArgs e)
         {
             if (_applicationState.Status == ConnectionStatus.Connected)
@@ -330,10 +354,7 @@ namespace SerialMonitor
             }
         }
 
-        private void popupMenuOpenFile_Click(object sender, EventArgs e)
-        {
 
-        }
 
         private void popupMenuSave_Click(object sender, EventArgs e)
         {
@@ -368,11 +389,6 @@ namespace SerialMonitor
             }
         }
 
-        private void drpRowOptions_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void btnQuickConnect_Click(object sender, EventArgs e)
         {
             if (_applicationState.Status == ConnectionStatus.Disconnected || _applicationState.Status == ConnectionStatus.None)
@@ -387,19 +403,24 @@ namespace SerialMonitor
             }
         }
 
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void popupMenuReconnect_Click(object sender, EventArgs e)
         {
-            // Save Settings
-            if (_serialComService.IsConnected)
+
+        }
+
+        private void popupMenuOpenFile_Click(object sender, EventArgs e)
+        {
+
+        }
+
+
+
+        private void cmbSendText_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
             {
-                _serialComService.Disconnect();
-                _serialComService.Dispose();
+                SendMessage();
             }
-            Enabled = false;
-            e.Cancel = false;
-
-
-            _appSettingsService.SaveSettings();
         }
     }
 }
