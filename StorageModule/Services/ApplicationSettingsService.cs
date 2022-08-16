@@ -48,7 +48,8 @@ namespace StorageModule.Services
 
         public bool SaveSettings()
         {
-            return true;
+            // No exceptions throughn ownly logged errors
+            return _appSettingsRepo.SaveAppSettings(_applicationSettingsModel);
         }
     }
 }

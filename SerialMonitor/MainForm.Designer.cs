@@ -39,7 +39,6 @@
             this.popupMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.popupMenuReconnect = new System.Windows.Forms.ToolStripMenuItem();
             this.popupMenuDisconnect = new System.Windows.Forms.ToolStripMenuItem();
-            this.txtSendText = new System.Windows.Forms.TextBox();
             this.btnSend = new System.Windows.Forms.Button();
             this.pnlOptions = new System.Windows.Forms.Panel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
@@ -56,6 +55,7 @@
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblStatus2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.grpBoxSend = new System.Windows.Forms.GroupBox();
+            this.cmbSendText = new System.Windows.Forms.ComboBox();
             this.grpBoxRecieveData = new System.Windows.Forms.GroupBox();
             this.txtBoxMenu.SuspendLayout();
             this.pnlOptions.SuspendLayout();
@@ -73,7 +73,7 @@
             this.txtRecievedData.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtRecievedData.ContextMenuStrip = this.txtBoxMenu;
             this.txtRecievedData.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtRecievedData.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtRecievedData.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.txtRecievedData.Location = new System.Drawing.Point(6, 19);
             this.txtRecievedData.Margin = new System.Windows.Forms.Padding(2);
             this.txtRecievedData.Name = "txtRecievedData";
@@ -135,23 +135,11 @@
             this.popupMenuDisconnect.Text = "Disconnect";
             this.popupMenuDisconnect.Click += new System.EventHandler(this.popupMenuDisconnect_Click);
             // 
-            // txtSendText
-            // 
-            this.txtSendText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSendText.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSendText.Location = new System.Drawing.Point(6, 21);
-            this.txtSendText.Margin = new System.Windows.Forms.Padding(3, 5, 3, 3);
-            this.txtSendText.MaxLength = 512;
-            this.txtSendText.Name = "txtSendText";
-            this.txtSendText.Size = new System.Drawing.Size(829, 25);
-            this.txtSendText.TabIndex = 1;
-            // 
             // btnSend
             // 
             this.btnSend.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSend.Enabled = false;
-            this.btnSend.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSend.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.btnSend.Location = new System.Drawing.Point(841, 21);
             this.btnSend.Name = "btnSend";
             this.btnSend.Size = new System.Drawing.Size(80, 26);
@@ -306,7 +294,7 @@
             // 
             // grpBoxSend
             // 
-            this.grpBoxSend.Controls.Add(this.txtSendText);
+            this.grpBoxSend.Controls.Add(this.cmbSendText);
             this.grpBoxSend.Controls.Add(this.btnSend);
             this.grpBoxSend.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpBoxSend.Location = new System.Drawing.Point(0, 0);
@@ -315,6 +303,17 @@
             this.grpBoxSend.TabIndex = 7;
             this.grpBoxSend.TabStop = false;
             this.grpBoxSend.Text = "Send text";
+            // 
+            // cmbSendText
+            // 
+            this.cmbSendText.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.cmbSendText.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            this.cmbSendText.FormattingEnabled = true;
+            this.cmbSendText.Location = new System.Drawing.Point(7, 21);
+            this.cmbSendText.Name = "cmbSendText";
+            this.cmbSendText.Size = new System.Drawing.Size(828, 23);
+            this.cmbSendText.TabIndex = 2;
+            this.cmbSendText.KeyUp += new System.Windows.Forms.KeyEventHandler(this.cmbSendText_KeyUp);
             // 
             // grpBoxRecieveData
             // 
@@ -337,7 +336,7 @@
             this.Controls.Add(this.grpBoxSend);
             this.Controls.Add(this.pnlOptions);
             this.Controls.Add(this.statusStrip1);
-            this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimumSize = new System.Drawing.Size(700, 500);
@@ -354,7 +353,6 @@
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.grpBoxSend.ResumeLayout(false);
-            this.grpBoxSend.PerformLayout();
             this.grpBoxRecieveData.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -363,7 +361,6 @@
 
         #endregion
         private System.Windows.Forms.RichTextBox txtRecievedData;
-        private System.Windows.Forms.TextBox txtSendText;
         private System.Windows.Forms.Button btnSend;
         private System.Windows.Forms.ContextMenuStrip txtBoxMenu;
         private System.Windows.Forms.ToolStripMenuItem popupMenuCopy;
@@ -388,6 +385,7 @@
         private System.Windows.Forms.ToolStripStatusLabel lblStatus2;
         private System.Windows.Forms.GroupBox grpBoxSend;
         private System.Windows.Forms.GroupBox grpBoxRecieveData;
+        private System.Windows.Forms.ComboBox cmbSendText;
     }
 }
 

@@ -34,8 +34,11 @@ namespace StorageModule.Models
                 .ForMember(s => s.EnableTimestamps, o => o.MapFrom(d => d.EnableTimestamps))
                 .ForMember(s => s.NewlineOption, o => o.MapFrom(d => d.NewlineOption))
                 .ForMember(s => s.Status, o => o.Ignore())
-
-                .ReverseMap();
+                .ForMember(s => s.SelectedComPort, o => o.MapFrom(d => d.SelectedComPort))
+                .ReverseMap()
+                .ForMember(s => s.SelectedComPort, o => o.MapFrom(d => d.SelectedComPort))
+                .ForMember(s => s.ConnectionStatus, o => o.MapFrom(d => (int) d.Status))
+                .ForMember(s => s.NewlineOption, o => o.MapFrom(d => d.SelectedComPort));
         }
     }
 }
