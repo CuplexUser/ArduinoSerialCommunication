@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Autofac;
 using SerialMonitor.EventStatus;
@@ -194,13 +195,19 @@ namespace SerialMonitor
             txtRecievedData.Clear();
         }
 
-        private void SendMessage()
+        private async Task SendMessage()
         {
             string mesage = cmbSendText.Text;
 
             if (!string.IsNullOrEmpty(mesage))
-            {   
-                _serialComService.SendTextLine(mesage);
+            {
+                var result = await _serialComService.SendTextLineAsync(mesage);
+                if (!result.Successful)
+                {
+                    txtRecievedData.AppendText($"Failed to send message. {result.ErrorMessage}\n");
+                    return;
+                }
+
                 if (!cmbSendText.AutoCompleteCustomSource.Contains(mesage))
                 {
                     cmbSendText.AutoCompleteCustomSource.Add(mesage);
@@ -228,9 +235,11 @@ namespace SerialMonitor
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void btnSend_Click(object sender, EventArgs e)
+        private async void btnSend_Click(object sender, EventArgs e)
         {
-            SendMessage();
+            btnSend.Enabled = false;
+            await SendMessage();
+            btnSend.Enabled = true;
         }
 
         private void ConnectToFirstOpenComPort()
@@ -415,11 +424,11 @@ namespace SerialMonitor
 
 
 
-        private void cmbSendText_KeyUp(object sender, KeyEventArgs e)
+        private async void cmbSendText_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
-                SendMessage();
+                await SendMessage();
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO.Ports;
 using System.Linq;
@@ -23,6 +24,8 @@ namespace SerialMonitor.Service
         ///     The baud rates
         /// </summary>
         private readonly int[] _baudRates = { 9600, 14400, 19200, 38400, 57600, 115200, 128000, 256000 };
+
+        private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
         /// <summary>
         ///     The serial COM wait handle
@@ -60,6 +63,7 @@ namespace SerialMonitor.Service
             _serialComWaitHandle = new AutoResetEvent(false);
             _serialComThreadActive = true;
             _isReadingSerialData = false;
+            _cancellationTokenSource.CancelAfter(5000);
         }
 
         /// <summary>
@@ -100,7 +104,7 @@ namespace SerialMonitor.Service
         /// <value>
         ///     <c>true</c> if this instance is connected; otherwise, <c>false</c>.
         /// </value>
-        public bool IsConnected => _serialPort != null && _serialPort.IsOpen;
+        public bool IsConnected => _serialPort is {IsOpen: true};
 
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -210,6 +214,7 @@ namespace SerialMonitor.Service
             try
             {
                 _serialPort = new SerialPort(portName, baudRate);
+                _serialPort.WriteTimeout = 4000;
 
                 //Default Value is 4 kb
                 _serialPort.ReadBufferSize = 32768;
@@ -274,12 +279,13 @@ namespace SerialMonitor.Service
                     //_logger.Information("Disconnected from serialport {port}", _serialPort.PortName);
                     _serialPort.Close();
                     SerialConnectionStateChanged?.Invoke(this, new SerialConnectionStateEventArgs(ConnectionStatus.Disconnected));
+                    _serialComWaitHandle.Set();
+                    _serialComWaitHandle = new AutoResetEvent(true);
                 }
 
                 _serialPort.DataReceived -= OnSerialPort_DataReceived;
                 _serialPort.ErrorReceived -= OnSerialPort_ErrorReceived;
                 _serialPort.Dispose();
-                _serialPort = null;
                 return true;
             }
 
@@ -323,6 +329,34 @@ namespace SerialMonitor.Service
             if (_serialPort!=null)
                 return new ConnectionStateModel {BaudRate = _serialPort.BaudRate.ToString(), ComPort = _serialPort.PortName, IsConnected = _serialPort.IsOpen};
             return ConnectionStateModel.NoConnectionInfo;
+        }
+
+        public async Task<AsyncOperationResult> SendTextLineAsync(string mesage)
+        {
+            if (_cancellationTokenSource.IsCancellationRequested)
+            {
+                _cancellationTokenSource = new CancellationTokenSource(5000);
+            }
+
+            if (!IsConnected)
+                return new AsyncOperationResult(false, false, "Not connected");
+
+            try
+            {
+                var task = Task<AsyncOperationResult>.Factory.StartNew(() =>
+                {
+                    _serialPort.WriteLine(mesage);
+                    return new AsyncOperationResult(true, false);
+                }, _cancellationTokenSource.Token);
+
+                var result = await task.ConfigureAwait(true);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "SendTextLineAsync exception");
+                return new AsyncOperationResult(false, ex is OperationCanceledException or TimeoutException, ex.Message);
+            }
         }
     }
 }
