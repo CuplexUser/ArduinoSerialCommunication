@@ -212,6 +212,7 @@ namespace SerialMonitor
                 {
                     cmbSendText.AutoCompleteCustomSource.Add(mesage);
                     cmbSendText.Items.Add(mesage);
+                    cmbSendText.SelectedIndex = cmbSendText.Items.Count - 1;
                 }
 
                 cmbSendText.SelectedItem = null;

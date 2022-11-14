@@ -79,7 +79,7 @@
             this.txtRecievedData.Name = "txtRecievedData";
             this.txtRecievedData.ReadOnly = true;
             this.txtRecievedData.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.txtRecievedData.Size = new System.Drawing.Size(915, 413);
+            this.txtRecievedData.Size = new System.Drawing.Size(716, 337);
             this.txtRecievedData.TabIndex = 2;
             this.txtRecievedData.Text = "";
             // 
@@ -138,13 +138,15 @@
             // btnSend
             // 
             this.btnSend.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSend.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.btnSend.Enabled = false;
             this.btnSend.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnSend.Location = new System.Drawing.Point(841, 21);
+            this.btnSend.Location = new System.Drawing.Point(642, 16);
             this.btnSend.Name = "btnSend";
-            this.btnSend.Size = new System.Drawing.Size(80, 26);
+            this.btnSend.Size = new System.Drawing.Size(80, 28);
             this.btnSend.TabIndex = 0;
             this.btnSend.Text = "Send";
+            this.btnSend.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnSend.UseVisualStyleBackColor = true;
             this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
             // 
@@ -153,12 +155,12 @@
             this.pnlOptions.Controls.Add(this.flowLayoutPanel1);
             this.pnlOptions.Controls.Add(this.flowLayoutPanel2);
             this.pnlOptions.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlOptions.Location = new System.Drawing.Point(0, 491);
+            this.pnlOptions.Location = new System.Drawing.Point(3, 409);
             this.pnlOptions.Margin = new System.Windows.Forms.Padding(2);
             this.pnlOptions.MinimumSize = new System.Drawing.Size(580, 25);
             this.pnlOptions.Name = "pnlOptions";
             this.pnlOptions.Padding = new System.Windows.Forms.Padding(2);
-            this.pnlOptions.Size = new System.Drawing.Size(927, 30);
+            this.pnlOptions.Size = new System.Drawing.Size(728, 30);
             this.pnlOptions.TabIndex = 5;
             // 
             // flowLayoutPanel1
@@ -206,7 +208,7 @@
             this.flowLayoutPanel2.Controls.Add(this.btnQuickConnect);
             this.flowLayoutPanel2.Controls.Add(this.btnExitApp);
             this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(586, 0);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(387, 0);
             this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(1);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Padding = new System.Windows.Forms.Padding(4, 2, 2, 2);
@@ -273,10 +275,10 @@
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.lblStatus,
             this.lblStatus2});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 521);
+            this.statusStrip1.Location = new System.Drawing.Point(3, 439);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 16, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(927, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(728, 22);
             this.statusStrip1.TabIndex = 6;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -297,21 +299,24 @@
             this.grpBoxSend.Controls.Add(this.cmbSendText);
             this.grpBoxSend.Controls.Add(this.btnSend);
             this.grpBoxSend.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpBoxSend.Location = new System.Drawing.Point(0, 0);
+            this.grpBoxSend.Location = new System.Drawing.Point(3, 0);
             this.grpBoxSend.Name = "grpBoxSend";
-            this.grpBoxSend.Size = new System.Drawing.Size(927, 56);
+            this.grpBoxSend.Size = new System.Drawing.Size(728, 50);
             this.grpBoxSend.TabIndex = 7;
             this.grpBoxSend.TabStop = false;
             this.grpBoxSend.Text = "Send text";
             // 
             // cmbSendText
             // 
+            this.cmbSendText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbSendText.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
             this.cmbSendText.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.cmbSendText.FormattingEnabled = true;
-            this.cmbSendText.Location = new System.Drawing.Point(7, 21);
+            this.cmbSendText.Location = new System.Drawing.Point(7, 20);
+            this.cmbSendText.Margin = new System.Windows.Forms.Padding(3, 3, 5, 3);
             this.cmbSendText.Name = "cmbSendText";
-            this.cmbSendText.Size = new System.Drawing.Size(828, 23);
+            this.cmbSendText.Size = new System.Drawing.Size(627, 23);
             this.cmbSendText.TabIndex = 2;
             this.cmbSendText.KeyUp += new System.Windows.Forms.KeyEventHandler(this.cmbSendText_KeyUp);
             // 
@@ -319,10 +324,10 @@
             // 
             this.grpBoxRecieveData.Controls.Add(this.txtRecievedData);
             this.grpBoxRecieveData.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpBoxRecieveData.Location = new System.Drawing.Point(0, 56);
+            this.grpBoxRecieveData.Location = new System.Drawing.Point(3, 50);
             this.grpBoxRecieveData.Name = "grpBoxRecieveData";
             this.grpBoxRecieveData.Padding = new System.Windows.Forms.Padding(6, 3, 6, 3);
-            this.grpBoxRecieveData.Size = new System.Drawing.Size(927, 435);
+            this.grpBoxRecieveData.Size = new System.Drawing.Size(728, 359);
             this.grpBoxRecieveData.TabIndex = 8;
             this.grpBoxRecieveData.TabStop = false;
             this.grpBoxRecieveData.Text = "Recieved Data";
@@ -331,7 +336,7 @@
             // 
             this.AcceptButton = this.btnSend;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(927, 543);
+            this.ClientSize = new System.Drawing.Size(734, 461);
             this.Controls.Add(this.grpBoxRecieveData);
             this.Controls.Add(this.grpBoxSend);
             this.Controls.Add(this.pnlOptions);
@@ -339,8 +344,9 @@
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(700, 500);
+            this.MinimumSize = new System.Drawing.Size(750, 500);
             this.Name = "MainForm";
+            this.Padding = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Serial Monitor";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);

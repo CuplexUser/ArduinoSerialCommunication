@@ -104,22 +104,23 @@ namespace SerialMonitor.Service
         /// <value>
         ///     <c>true</c> if this instance is connected; otherwise, <c>false</c>.
         /// </value>
-        public bool IsConnected => _serialPort is {IsOpen: true};
+        public bool IsConnected => _serialPort is { IsOpen: true };
 
         /// <summary>
         ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
         {
+            if (_serialPort == null)
+                return;
+
             _serialComThreadActive = false;
             if (_serialComWaitHandle != null)
             {
                 _serialComWaitHandle.Close();
-                _serialComWaitHandle.Dispose();
                 _serialComWaitHandle = null;
             }
-
-            _serialPort?.Dispose();
+            _serialPort = null;
         }
 
 
@@ -193,7 +194,7 @@ namespace SerialMonitor.Service
                         sb.Clear();
                     }
 
-                    _readTask.Wait(TimeSpan.FromMilliseconds(200));
+                    _readTask.Wait(TimeSpan.FromMilliseconds(100));
                 } while (_serialPort.BytesToRead > 0);
 
 
@@ -326,8 +327,8 @@ namespace SerialMonitor.Service
 
         public ConnectionStateModel GetConnectionStatus()
         {
-            if (_serialPort!=null)
-                return new ConnectionStateModel {BaudRate = _serialPort.BaudRate.ToString(), ComPort = _serialPort.PortName, IsConnected = _serialPort.IsOpen};
+            if (_serialPort != null)
+                return new ConnectionStateModel { BaudRate = _serialPort.BaudRate.ToString(), ComPort = _serialPort.PortName, IsConnected = _serialPort.IsOpen };
             return ConnectionStateModel.NoConnectionInfo;
         }
 
